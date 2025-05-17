@@ -1,4 +1,4 @@
-# HealthConnect Bangladesh - Healthcare Appointment Booking System
+# HealthConnect Bangladesh - Healthcare AI Appointment Booking System
 
 An AI-powered healthcare appointment booking platform designed to improve healthcare access in Bangladesh through intelligent doctor matching, multilingual support, and low-bandwidth optimization.
 
@@ -47,121 +47,121 @@ HealthConnect Bangladesh is a comprehensive healthcare platform that connects pa
 
 ## Project Structure
 
-\`\`\`
-healthconnect-bangladesh/
-├── .github/ # GitHub workflows and templates
-│ ├── workflows/ # CI/CD workflows
-│ │ ├── ci.yml # Continuous Integration workflow
-│ │ └── deploy.yml # Deployment workflow
-│ └── ISSUE_TEMPLATE/ # Issue templates
-├── .husky/ # Git hooks for code quality
-├── app/ # Next.js App Router
-│ ├── api/ # API routes
-│ │ ├── auth/ # Authentication endpoints
-│ │ │ ├── login/ # Login endpoint
-│ │ │ ├── logout/ # Logout endpoint
-│ │ │ └── register/ # Registration endpoint
-│ │ ├── appointments/ # Appointment endpoints
-│ │ ├── doctors/ # Doctor endpoints
-│ │ ├── prescriptions/ # Prescription endpoints
-│ │ └── symptoms/ # Symptom analysis endpoints
-│ ├── (auth)/ # Authentication pages
-│ │ ├── login/ # Login page
-│ │ └── register/ # Registration page
-│ ├── (dashboard)/ # Dashboard pages
-│ │ ├── dashboard/ # User dashboard
-│ │ └── appointments/ # Appointments management
-│ ├── admin/ # Admin section
-│ │ ├── dashboard/ # Admin dashboard
-│ │ ├── doctors/ # Doctor management
-│ │ └── patients/ # Patient management
-│ ├── find-doctor/ # Doctor search
-│ ├── symptom-checker/ # Symptom analysis
-│ └── layout.tsx # Root layout
-├── components/ # React components
-│ ├── auth/ # Authentication components
-│ ├── dashboard/ # Dashboard components
-│ ├── doctors/ # Doctor-related components
-│ ├── layout/ # Layout components
-│ ├── patients/ # Patient-related components
-│ ├── symptom-checker/ # Symptom checker components
-│ ├── ui/ # UI components (shadcn)
-│ └── video-call/ # Video consultation components
-├── config/ # Configuration files
-│ ├── site.ts # Site configuration
-│ └── dashboard.ts # Dashboard configuration
-├── lib/ # Utility functions
-│ ├── api/ # API client functions
-│ │ ├── auth.ts # Authentication API
-│ │ ├── appointments.ts # Appointments API
-│ │ ├── doctors.ts # Doctors API
-│ │ ├── prescriptions.ts # Prescriptions API
-│ │ ├── symptoms.ts # Symptoms API
-│ │ └── types.ts # API types
-│ ├── db/ # Database utilities
-│ │ ├── mongodb.ts # MongoDB connection
-│ │ └── schema.ts # Database schema
-│ ├── auth/ # Authentication utilities
-│ │ ├── jwt.ts # JWT utilities
-│ │ └── middleware.ts # Auth middleware
-│ ├── utils/ # General utilities
-│ │ ├── date.ts # Date utilities
-│ │ └── validation.ts # Validation utilities
-│ └── constants.ts # Constants
-├── ml-service/ # Python ML service
-│ ├── app/ # Flask application
-│ │ ├── **init**.py # Flask app initialization
-│ │ ├── routes/ # API routes
-│ │ │ ├── **init**.py # Routes initialization
-│ │ │ ├── analyze.py # Symptom analysis routes
-│ │ │ └── recommend.py # Doctor recommendation routes
-│ │ ├── models/ # ML models
-│ │ │ ├── **init**.py # Models initialization
-│ │ │ ├── symptom_analyzer.py # Symptom analysis model
-│ │ │ └── doctor_recommender.py # Doctor recommendation model
-│ │ ├── utils/ # Utility functions
-│ │ │ ├── **init**.py # Utils initialization
-│ │ │ ├── text_processor.py # Text processing utilities
-│ │ │ └── translator.py # Translation utilities
-│ │ └── config.py # Configuration
-│ ├── tests/ # Tests
-│ │ ├── **init**.py # Tests initialization
-│ │ ├── test_analyze.py # Symptom analysis tests
-│ │ └── test_recommend.py # Doctor recommendation tests
-│ ├── .env.example # Example environment variables
-│ ├── Dockerfile # Docker configuration
-│ ├── requirements.txt # Python dependencies
-│ ├── requirements-dev.txt # Development dependencies
-│ └── wsgi.py # WSGI entry point
-├── public/ # Static assets
-│ ├── fonts/ # Font files
-│ ├── images/ # Image files
-│ └── locales/ # Localization files
-├── scripts/ # Utility scripts
-│ ├── seed-db.js # Database seeding
-│ └── generate-types.js # Type generation
-├── styles/ # Global styles
-│ └── globals.css # Global CSS
-├── tests/ # Frontend tests
-│ ├── components/ # Component tests
-│ ├── pages/ # Page tests
-│ └── utils/ # Utility tests
-├── types/ # TypeScript type definitions
-│ ├── api.ts # API types
-│ ├── auth.ts # Authentication types
-│ └── index.ts # Common types
-├── .env.example # Example environment variables
-├── .eslintrc.js # ESLint configuration
-├── .gitignore # Git ignore file
-├── .prettierrc # Prettier configuration
-├── docker-compose.yml # Docker Compose configuration
-├── jest.config.js # Jest configuration
-├── next.config.js # Next.js configuration
-├── package.json # Node.js dependencies
-├── postcss.config.js # PostCSS configuration
-├── tailwind.config.js # Tailwind CSS configuration
-└── tsconfig.json # TypeScript configuration
-\`\`\`
+```bash
+healthcare-ai-booking-system/
+├── .github/                        # GitHub workflows and templates
+│   ├── workflows/                  # CI/CD workflows
+│   │   ├── ci.yml                  # Continuous Integration workflow
+│   │   └── deploy.yml              # Deployment workflow
+│   └── ISSUE_TEMPLATE/             # Issue templates
+├── .husky/                         # Git hooks for code quality
+├── app/                            # Next.js App Router
+│   ├── api/                        # API routes
+│   │   ├── auth/                   # Authentication endpoints
+│   │   │   ├── login/              # Login endpoint
+│   │   │   ├── logout/             # Logout endpoint
+│   │   │   └── register/           # Registration endpoint
+│   │   ├── appointments/           # Appointment endpoints
+│   │   ├── doctors/                # Doctor endpoints
+│   │   ├── prescriptions/          # Prescription endpoints
+│   │   └── symptoms/               # Symptom analysis endpoints
+│   ├── (auth)/                     # Authentication pages
+│   │   ├── login/                  # Login page
+│   │   └── register/               # Registration page
+│   ├── (dashboard)/                # Dashboard pages
+│   │   ├── dashboard/              # User dashboard
+│   │   └── appointments/           # Appointments management
+│   ├── admin/                      # Admin section
+│   │   ├── dashboard/              # Admin dashboard
+│   │   ├── doctors/                # Doctor management
+│   │   └── patients/               # Patient management
+│   ├── find-doctor/                # Doctor search
+│   ├── symptom-checker/            # Symptom analysis
+│   └── layout.tsx                  # Root layout
+├── components/                     # React components
+│   ├── auth/                       # Authentication components
+│   ├── dashboard/                  # Dashboard components
+│   ├── doctors/                    # Doctor-related components
+│   ├── layout/                     # Layout components
+│   ├── patients/                   # Patient-related components
+│   ├── symptom-checker/            # Symptom checker components
+│   ├── ui/                         # UI components (shadcn)
+│   └── video-call/                 # Video consultation components
+├── config/                         # Configuration files
+│   ├── site.ts                     # Site configuration
+│   └── dashboard.ts                # Dashboard configuration
+├── lib/                            # Utility functions
+│   ├── api/                        # API client functions
+│   │   ├── auth.ts                 # Authentication API
+│   │   ├── appointments.ts         # Appointments API
+│   │   ├── doctors.ts              # Doctors API
+│   │   ├── prescriptions.ts        # Prescriptions API
+│   │   ├── symptoms.ts             # Symptoms API
+│   │   └── types.ts                # API types
+│   ├── db/                         # Database utilities
+│   │   ├── mongodb.ts              # MongoDB connection
+│   │   └── schema.ts               # Database schema
+│   ├── auth/                       # Authentication utilities
+│   │   ├── jwt.ts                  # JWT utilities
+│   │   └── middleware.ts           # Auth middleware
+│   ├── utils/                      # General utilities
+│   │   ├── date.ts                 # Date utilities
+│   │   └── validation.ts           # Validation utilities
+│   └── constants.ts                # Constants
+├── ml-service/                     # Python ML service
+│   ├── app/                        # Flask application
+│   │   ├── __init__.py             # Flask app initialization
+│   │   ├── routes/                 # API routes
+│   │   │   ├── __init__.py         # Routes initialization
+│   │   │   ├── analyze.py          # Symptom analysis routes
+│   │   │   └── recommend.py        # Doctor recommendation routes
+│   │   ├── models/                 # ML models
+│   │   │   ├── __init__.py         # Models initialization
+│   │   │   ├── symptom_analyzer.py # Symptom analysis model
+│   │   │   └── doctor_recommender.py # Doctor recommendation model
+│   │   ├── utils/                  # Utility functions
+│   │   │   ├── __init__.py         # Utils initialization
+│   │   │   ├── text_processor.py   # Text processing utilities
+│   │   │   └── translator.py       # Translation utilities
+│   │   └── config.py               # Configuration
+│   ├── tests/                      # Tests
+│   │   ├── __init__.py             # Tests initialization
+│   │   ├── test_analyze.py         # Symptom analysis tests
+│   │   └── test_recommend.py       # Doctor recommendation tests
+│   ├── .env.example                # Example environment variables
+│   ├── Dockerfile                  # Docker configuration
+│   ├── requirements.txt            # Python dependencies
+│   ├── requirements-dev.txt        # Development dependencies
+│   └── wsgi.py                     # WSGI entry point
+├── public/                         # Static assets
+│   ├── fonts/                      # Font files
+│   ├── images/                     # Image files
+│   └── locales/                    # Localization files
+├── scripts/                        # Utility scripts
+│   ├── seed-db.js                  # Database seeding
+│   └── generate-types.js           # Type generation
+├── styles/                         # Global styles
+│   └── globals.css                 # Global CSS
+├── tests/                          # Frontend tests
+│   ├── components/                 # Component tests
+│   ├── pages/                      # Page tests
+│   └── utils/                      # Utility tests
+├── types/                          # TypeScript type definitions
+│   ├── api.ts                      # API types
+│   ├── auth.ts                     # Authentication types
+│   └── index.ts                    # Common types
+├── .env.example                    # Example environment variables
+├── .eslintrc.js                    # ESLint configuration
+├── .gitignore                      # Git ignore file
+├── .prettierrc                     # Prettier configuration
+├── docker-compose.yml              # Docker Compose configuration
+├── jest.config.js                  # Jest configuration
+├── next.config.js                  # Next.js configuration
+├── package.json                    # Node.js dependencies
+├── postcss.config.js               # PostCSS configuration
+├── tailwind.config.js              # Tailwind CSS configuration
+└── tsconfig.json                   # TypeScript configuration
+```
 
 ## Getting Started
 
@@ -283,86 +283,86 @@ The following API endpoints need to be implemented:
 
 #### Users Collection
 
-\`\`\`javascript
+```javascript
 {
-\_id: ObjectId,
-name: String,
-email: String,
-password: String, // Hashed with bcrypt
-phone: String,
-role: String, // "patient", "doctor", or "admin"
-language: String, // "en" or "bn"
-createdAt: Date
+  _id: ObjectId,
+  name: String,
+  email: String,
+  password: String, // Hashed with bcrypt
+  phone: String,
+  role: String, // "patient", "doctor", or "admin"
+  language: String, // "en" or "bn"
+  createdAt: Date
 }
-\`\`\`
+```
 
 #### Doctors Collection
 
-\`\`\`javascript
+```javascript
 {
-\_id: ObjectId,
-userId: ObjectId, // Reference to Users collection
-specialty: String,
-qualifications: [String],
-experience: Number,
-languages: [String],
-availableSlots: [
-{
-day: String,
-startTime: String,
-endTime: String,
-available: Boolean
+  _id: ObjectId,
+  userId: ObjectId, // Reference to Users collection
+  specialty: String,
+  qualifications: [String],
+  experience: Number,
+  languages: [String],
+  availableSlots: [
+    {
+      day: String,
+      startTime: String,
+      endTime: String,
+      available: Boolean
+    }
+  ],
+  location: {
+    address: String,
+    city: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    }
+  },
+  rating: Number,
+  reviewCount: Number,
+  consultationFee: Number,
+  bio: String
 }
-],
-location: {
-address: String,
-city: String,
-coordinates: {
-latitude: Number,
-longitude: Number
-}
-},
-rating: Number,
-reviewCount: Number,
-consultationFee: Number,
-bio: String
-}
-\`\`\`
+```
 
 #### Appointments Collection
 
-\`\`\`javascript
+```javascript
 {
-\_id: ObjectId,
-patientId: String, // Reference to Users collection
-doctorId: String, // Reference to Doctors collection
-date: String,
-time: String,
-type: String, // "video" or "in-person"
-status: String, // "scheduled", "completed", "cancelled", or "no-show"
-symptoms: String,
-urgencyScore: Number,
-prescription: String,
-followUp: Boolean,
-createdAt: Date,
-updatedAt: Date
+  _id: ObjectId,
+  patientId: String, // Reference to Users collection
+  doctorId: String, // Reference to Doctors collection
+  date: String,
+  time: String,
+  type: String, // "video" or "in-person"
+  status: String, // "scheduled", "completed", "cancelled", or "no-show"
+  symptoms: String,
+  urgencyScore: Number,
+  prescription: String,
+  followUp: Boolean,
+  createdAt: Date,
+  updatedAt: Date
 }
-\`\`\`
+```
 
 #### Medical Records Collection
 
-\`\`\`javascript
+```javascript
 {
-\_id: ObjectId,
-patientId: String,
-doctorId: String,
-date: String,
-diagnosis: String,
-prescription: String,
-notes: String,
-createdAt: Date
+  _id: ObjectId,
+  patientId: String,
+  doctorId: String,
+  date: String,
+  diagnosis: String,
+  prescription: String,
+  notes: String,
+  createdAt: Date
 }
-\`\`\`
+```
 
 ## ML Service Architecture
 
