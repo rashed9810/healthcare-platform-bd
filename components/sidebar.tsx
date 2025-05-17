@@ -106,11 +106,11 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-4">
+      <SidebarFooter className="border-t border-sidebar-border/50 p-4">
         <div className="flex flex-col gap-3">
           <Button
             variant="outline"
-            className="w-full justify-start gap-2 hover:bg-primary/5 hover:text-primary transition-colors"
+            className="w-full justify-start gap-2 hover:bg-primary/5 hover:text-primary transition-colors focus:ring-2 focus:ring-primary/30 outline-offset-2"
             asChild
           >
             <Link href="/login">
@@ -146,7 +146,7 @@ export function AppSidebar() {
             </Link>
           </Button>
           <Button
-            className="w-full justify-start gap-2 relative group overflow-hidden"
+            className="w-full justify-start gap-2 relative group overflow-hidden bg-white text-primary hover:bg-white/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 focus:ring-2 focus:ring-primary/30 outline-offset-2"
             asChild
           >
             <Link href="/register">

@@ -33,34 +33,34 @@ export default function HeroSection() {
               <Button
                 asChild
                 size="lg"
-                className="relative group overflow-hidden shadow-md hover:shadow-lg transition-all duration-300"
+                className="relative group overflow-hidden shadow-md transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_0_10px_rgba(68,138,255,0.3)] transform-gpu"
               >
                 <Link href="/symptom-checker" className="flex items-center">
                   Check Symptoms
-                  <span className="absolute inset-0 w-full h-full bg-white/10 group-hover:bg-white/20 transition-colors duration-300"></span>
+                  <span className="absolute inset-0 w-full h-full bg-white/10 group-hover:bg-white/20 transition-colors duration-200"></span>
                 </Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 relative group"
+                className="border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-200 relative group hover:shadow-[0_0_10px_rgba(68,138,255,0.2)] dark:text-white"
               >
                 <Link href="/find-doctor">
                   Find a Doctor
-                  <span className="absolute inset-0 w-full h-full group-hover:shadow-[inset_0_0_0_1.5px] group-hover:shadow-primary/50 rounded-md transition-all duration-300"></span>
+                  <span className="absolute inset-0 w-full h-full group-hover:shadow-[inset_0_0_0_1.5px] group-hover:shadow-primary/50 rounded-md transition-all duration-200"></span>
                 </Link>
               </Button>
             </div>
-            <div className="flex items-center gap-4 mt-4">
-              <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/80 to-primary/60 flex items-center justify-center text-white text-xs shadow-sm">
+            <div className="flex items-center gap-4 mt-4 animate-fade-in">
+              <div className="flex space-x-2">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/80 to-indigo-600/60 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                   +5k
                 </div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/70 to-primary/50 flex items-center justify-center text-white text-xs shadow-sm">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/70 to-indigo-600/50 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                   +2k
                 </div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/60 to-primary/40 flex items-center justify-center text-white text-xs shadow-sm">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/60 to-indigo-600/40 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                   +3k
                 </div>
               </div>
@@ -73,13 +73,17 @@ export default function HeroSection() {
           </div>
           <div className="flex items-center justify-center relative">
             <div className="absolute inset-0 bg-gradient-to-r from-teal-300/20 to-blue-300/20 dark:from-teal-900/20 dark:to-blue-900/20 rounded-2xl blur-xl -z-10"></div>
-            <img
-              alt="Doctor consulting patient via video call"
-              className="aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last shadow-lg"
-              height="550"
-              src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=1080&auto=format&fit=crop"
-              width="750"
-            />
+            {/* Added vignette effect */}
+            <div className="relative w-full">
+              <div className="absolute inset-0 rounded-xl shadow-[inset_0_0_60px_rgba(0,0,0,0.3)] pointer-events-none z-10"></div>
+              <img
+                alt="Doctor consulting patient via video call"
+                className="aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last shadow-lg ring-2 ring-white/20 dark:ring-white/10"
+                height="550"
+                src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=1080&auto=format&fit=crop"
+                width="750"
+              />
+            </div>
           </div>
         </div>
       </div>
