@@ -49,20 +49,46 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // For testing, just accept test@example.com/password123
-      if (
-        values.email === "test@example.com" &&
-        values.password === "password123"
-      ) {
-        // Store token in localStorage
-        localStorage.setItem("token", "test-token");
+      console.log("Sending login request...");
 
-        // Redirect to dashboard
-        router.push("/dashboard");
+      // Call the login API
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      console.log("Login response status:", response.status);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Login failed:", data.message);
+        throw new Error(
+          data.message || "Login failed. Please check your credentials."
+        );
+      }
+
+      console.log("Login successful, storing token");
+
+      // Store token in localStorage
+      localStorage.setItem("token", data.token);
+
+      // Redirect based on user role
+      if (data.user.role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (data.user.role === "doctor") {
+        router.push("/doctor/dashboard");
       } else {
-        throw new Error("Invalid email or password. Please try again.");
+        router.push("/dashboard");
       }
     } catch (err: any) {
+      console.error("Login error:", err);
       setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);

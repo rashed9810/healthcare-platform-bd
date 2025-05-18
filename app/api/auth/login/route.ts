@@ -1,10 +1,36 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { connectToDatabase } from "@/lib/db";
 
 // JWT secret should be in environment variables
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+
+// Mock user data for testing
+const MOCK_USERS = [
+  {
+    id: "1",
+    email: "test@example.com",
+    password: "password123", // In a real app, this would be hashed
+    name: "Test User",
+    role: "admin",
+    language: "en",
+  },
+  {
+    id: "2",
+    email: "doctor@example.com",
+    password: "password123",
+    name: "Dr. Example",
+    role: "doctor",
+    language: "en",
+  },
+  {
+    id: "3",
+    email: "patient@example.com",
+    password: "password123",
+    name: "Patient Example",
+    role: "patient",
+    language: "en",
+  },
+];
 
 export async function POST(request: Request) {
   try {
@@ -40,25 +66,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Connect to database
-    console.log("Connecting to database...");
-    let db;
-    try {
-      db = await connectToDatabase();
-      console.log("Connected to database successfully");
-    } catch (dbError) {
-      console.error("Database connection error:", dbError);
-      return NextResponse.json(
-        { message: "Database connection failed" },
-        { status: 500 }
-      );
-    }
-
-    const usersCollection = db.collection("users");
-
-    // Find user
+    // Find user in mock data
     console.log("Looking for user with email:", email);
-    const user = await usersCollection.findOne({ email });
+    const user = MOCK_USERS.find((u) => u.email === email);
 
     if (!user) {
       console.log("User not found with email:", email);
@@ -68,23 +78,10 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log("User found:", { id: user._id.toString(), role: user.role });
+    console.log("User found:", { id: user.id, role: user.role });
 
-    // Verify password
-    console.log("Verifying password...");
-    let isPasswordValid;
-    try {
-      isPasswordValid = await bcrypt.compare(password, user.password);
-      console.log("Password verification result:", isPasswordValid);
-    } catch (bcryptError) {
-      console.error("Password verification error:", bcryptError);
-      return NextResponse.json(
-        { message: "Authentication error" },
-        { status: 500 }
-      );
-    }
-
-    if (!isPasswordValid) {
+    // Verify password (simple comparison for mock data)
+    if (password !== user.password) {
       console.log("Invalid password for user:", email);
       return NextResponse.json(
         { message: "Invalid credentials" },
@@ -94,30 +91,21 @@ export async function POST(request: Request) {
 
     // Create JWT token
     console.log("Creating JWT token...");
-    let token;
-    try {
-      token = jwt.sign(
-        { id: user._id.toString(), email: user.email, role: user.role },
-        JWT_SECRET,
-        {
-          expiresIn: "7d",
-        }
-      );
-      console.log("JWT token created successfully");
-    } catch (jwtError) {
-      console.error("JWT creation error:", jwtError);
-      return NextResponse.json(
-        { message: "Authentication error" },
-        { status: 500 }
-      );
-    }
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+    console.log("JWT token created successfully");
 
     // Return user data (excluding password) and token
     const { password: _, ...userWithoutPassword } = user;
 
     console.log("Login successful, returning user data and token");
     return NextResponse.json({
-      user: { ...userWithoutPassword, id: user._id.toString() },
+      user: userWithoutPassword,
       token,
     });
   } catch (error) {
