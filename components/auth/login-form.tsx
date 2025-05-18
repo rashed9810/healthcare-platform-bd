@@ -224,51 +224,6 @@ export default function LoginForm() {
         </form>
       </Form>
 
-      {/* Direct login button for testing */}
-      <div className="mt-6">
-        <Button
-          className="w-full bg-green-600 hover:bg-green-700"
-          onClick={async () => {
-            try {
-              console.log("Test login button clicked");
-              const response = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  email: "test@example.com",
-                  password: "password123",
-                }),
-              });
-
-              console.log("Login response status:", response.status);
-
-              const data = await response.json();
-              console.log("Login response data:", data);
-
-              if (response.ok) {
-                console.log("Login successful, storing token");
-                localStorage.setItem("token", data.token);
-                console.log("Redirecting to dashboard");
-                router.push("/dashboard");
-              } else {
-                console.error("Login failed:", data.message);
-                setError("Login failed: " + data.message);
-              }
-            } catch (err) {
-              console.error("Test login error:", err);
-              setError(
-                "Test login error: " +
-                  (err instanceof Error ? err.message : String(err))
-              );
-            }
-          }}
-        >
-          Test Login (Hardcoded Credentials)
-        </Button>
-      </div>
-
       <div className="mt-6 text-center">
         <Link
           href="/forgot-password"

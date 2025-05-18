@@ -3,14 +3,17 @@
 import React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarWrapper } from "@/components/sidebar";
-
-// Note: We're not using AuthProvider and I18nProvider here anymore
-// They will be used in specific client components that need them
+import { AuthProvider } from "@/contexts/auth-context";
+import { I18nProvider } from "@/lib/i18n-simple";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <SidebarWrapper>{children}</SidebarWrapper>
+      <AuthProvider>
+        <I18nProvider>
+          <SidebarWrapper>{children}</SidebarWrapper>
+        </I18nProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

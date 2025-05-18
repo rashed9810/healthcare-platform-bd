@@ -17,18 +17,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Home, Calendar, Search, Stethoscope, LogOut } from "lucide-react";
-import { isAuthenticated, logout } from "@/lib/api/auth";
+import { isAuthenticated } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
 
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const isActive = (path: string) => pathname === path;
+  const { logout, isAuthenticated: isAuthContextAuthenticated } = useAuth();
 
   const handleLogout = async () => {
     try {
       await logout();
-      router.push("/login");
+      // No need to redirect here as the logout function in auth context already handles it
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -38,8 +40,9 @@ export function AppSidebar() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
-    setIsLoggedIn(isAuthenticated());
-  }, []);
+    // First check auth context, then fallback to the isAuthenticated function
+    setIsLoggedIn(isAuthContextAuthenticated || isAuthenticated());
+  }, [isAuthContextAuthenticated]);
 
   return (
     <Sidebar>
@@ -113,87 +116,100 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t border-sidebar-border/50 p-4">
         <div className="flex flex-col gap-3">
-          <Button
-            variant="outline"
-            className="w-full justify-start gap-2 hover:bg-primary/5 hover:text-primary transition-colors focus:ring-2 focus:ring-primary/30 outline-offset-2"
-            asChild
-          >
-            <Link href="/login">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+          {isLoggedIn ? (
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 hover:bg-red-50 hover:text-red-600 transition-colors focus:ring-2 focus:ring-red-300 outline-offset-2"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-5 w-5" />
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                className="w-full justify-start gap-2 hover:bg-primary/5 hover:text-primary transition-colors focus:ring-2 focus:ring-primary/30 outline-offset-2"
+                asChild
               >
-                <path
-                  d="M15 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H15"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M10 17L15 12L10 7"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M15 12H3"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Login
-            </Link>
-          </Button>
-          <Button
-            className="w-full justify-start gap-2 relative group overflow-hidden bg-white text-primary hover:bg-white/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 focus:ring-2 focus:ring-primary/30 outline-offset-2"
-            asChild
-          >
-            <Link href="/register">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+                <Link href="/login">
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H15"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M10 17L15 12L10 7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M15 12H3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Login
+                </Link>
+              </Button>
+              <Button
+                className="w-full justify-start gap-2 relative group overflow-hidden bg-white text-primary hover:bg-white/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 focus:ring-2 focus:ring-primary/30 outline-offset-2"
+                asChild
               >
-                <path
-                  d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M20 8V14"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M23 11H17"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Register
-              <span className="absolute inset-0 w-full h-full bg-white/10 group-hover:bg-transparent transition-colors duration-300"></span>
-            </Link>
-          </Button>
+                <Link href="/register">
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M20 8V14"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M23 11H17"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Register
+                  <span className="absolute inset-0 w-full h-full bg-white/10 group-hover:bg-transparent transition-colors duration-300"></span>
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
       </SidebarFooter>
     </Sidebar>
