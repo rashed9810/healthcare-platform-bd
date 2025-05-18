@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Doctor Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .image-test {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Doctor Avatar Image Test</h1>
+    
+    <div class="image-test">
+        <h2>Doctor Avatar 1</h2>
+        <img src="/images/doctor-avatar-1.svg" alt="Doctor Avatar 1" onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error: Image failed to load</p>'" onload="this.parentNode.innerHTML += '<p class=\'success\'>Success: Image loaded correctly</p>'">
+    </div>
+    
+    <div class="image-test">
+        <h2>Doctor Avatar 2</h2>
+        <img src="/images/doctor-avatar-2.svg" alt="Doctor Avatar 2" onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error: Image failed to load</p>'" onload="this.parentNode.innerHTML += '<p class=\'success\'>Success: Image loaded correctly</p>'">
+    </div>
+    
+    <div class="image-test">
+        <h2>Doctor Avatar 3</h2>
+        <img src="/images/doctor-avatar-3.svg" alt="Doctor Avatar 3" onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error: Image failed to load</p>'" onload="this.parentNode.innerHTML += '<p class=\'success\'>Success: Image loaded correctly</p>'">
+    </div>
+    
+    <div class="image-test">
+        <h2>Doctor Avatar 4</h2>
+        <img src="/images/doctor-avatar-4.svg" alt="Doctor Avatar 4" onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error: Image failed to load</p>'" onload="this.parentNode.innerHTML += '<p class=\'success\'>Success: Image loaded correctly</p>'">
+    </div>
+    
+    <div class="image-test">
+        <h2>Original PNG Path Test (Should Fail)</h2>
+        <img src="/images/doctor-avatar-1.png" alt="Doctor Avatar 1 PNG" onerror="this.parentNode.innerHTML += '<p class=\'error\'>Error: Image failed to load (expected)</p>'" onload="this.parentNode.innerHTML += '<p class=\'success\'>Success: Image loaded correctly (unexpected)</p>'">
+    </div>
+</body>
+</html>

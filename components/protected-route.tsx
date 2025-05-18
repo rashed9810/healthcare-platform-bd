@@ -1,30 +1,52 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/auth-context"
-import { Loader2 } from "lucide-react"
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
-  allowedRoles?: ("patient" | "doctor" | "admin")[]
+  children: React.ReactNode;
+  allowedRoles?: ("patient" | "doctor" | "admin")[];
 }
 
-export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading, user } = useAuth()
-  const router = useRouter()
+export default function ProtectedRoute({
+  children,
+  allowedRoles,
+}: ProtectedRouteProps) {
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
+    console.log("Protected route effect running");
+    console.log("Auth state:", {
+      isLoading,
+      isAuthenticated,
+      userRole: user?.role,
+    });
+
     if (!isLoading && !isAuthenticated) {
-      router.push("/login?redirect=" + encodeURIComponent(window.location.pathname))
+      console.log("User not authenticated, redirecting to login");
+      router.push(
+        "/login?redirect=" + encodeURIComponent(window.location.pathname)
+      );
     }
 
     if (!isLoading && isAuthenticated && allowedRoles && user) {
+      console.log("Checking role authorization:", {
+        userRole: user.role,
+        allowedRoles,
+      });
       if (!allowedRoles.includes(user.role)) {
-        router.push("/unauthorized")
+        console.log(
+          "User role not authorized, redirecting to unauthorized page"
+        );
+        router.push("/unauthorized");
+      } else {
+        console.log("User authorized to access this route");
       }
     }
-  }, [isLoading, isAuthenticated, router, allowedRoles, user])
+  }, [isLoading, isAuthenticated, router, allowedRoles, user]);
 
   if (isLoading) {
     return (
@@ -34,16 +56,16 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
           <p>Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (!isAuthenticated) {
-    return null
+    return null;
   }
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    return null
+    return null;
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }

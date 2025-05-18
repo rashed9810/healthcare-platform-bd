@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import React from "react";
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -34,7 +34,12 @@ export function AppSidebar() {
     }
   };
 
-  const isLoggedIn = isAuthenticated();
+  // Use useState and useEffect to handle client-side authentication check
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoggedIn(isAuthenticated());
+  }, []);
 
   return (
     <Sidebar>
@@ -196,11 +201,20 @@ export function AppSidebar() {
 }
 
 export function SidebarWrapper({ children }: { children: React.ReactNode }) {
+  // Use state to track client-side rendering
+  const [mounted, setMounted] = React.useState(false);
+
+  // Mark when component is mounted (client-side only)
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen">
         <div className="hidden md:block">
-          <AppSidebar />
+          {/* Only render AppSidebar on client-side to avoid hydration issues */}
+          {mounted && <AppSidebar />}
         </div>
         <main className="flex-1">{children}</main>
       </div>

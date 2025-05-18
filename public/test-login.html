@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #3b82f6;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Login Form</h1>
+    <p>This is a simple form to test the login API directly.</p>
+    
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" value="test@example.com">
+    </div>
+    
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" value="password123">
+    </div>
+    
+    <button id="loginButton">Login</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Sending login request...';
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                resultDiv.innerHTML += '\nAttempting to login with email: ' + email;
+                
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+                
+                resultDiv.innerHTML += '\nResponse status: ' + response.status;
+                
+                const data = await response.json();
+                resultDiv.innerHTML += '\nResponse data: ' + JSON.stringify(data, null, 2);
+                
+                if (response.ok) {
+                    resultDiv.innerHTML += '\n\n<span class="success">Login successful!</span>';
+                    resultDiv.innerHTML += '\nUser ID: ' + data.user.id;
+                    resultDiv.innerHTML += '\nUser role: ' + data.user.role;
+                    resultDiv.innerHTML += '\nToken exists: ' + !!data.token;
+                    
+                    // Store token in localStorage
+                    localStorage.setItem('token', data.token);
+                    resultDiv.innerHTML += '\nToken stored in localStorage';
+                    
+                    // Add link to dashboard
+                    resultDiv.innerHTML += '\n\n<a href="/dashboard">Go to Dashboard</a>';
+                } else {
+                    resultDiv.innerHTML += '\n\n<span class="error">Login failed!</span>';
+                    resultDiv.innerHTML += '\nError message: ' + data.message;
+                }
+            } catch (error) {
+                resultDiv.innerHTML += '\n\n<span class="error">Error:</span> ' + error.message;
+                console.error('Login error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

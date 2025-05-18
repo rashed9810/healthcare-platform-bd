@@ -56,15 +56,21 @@ export default function LanguageSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 gap-1">
           <Globe className="h-4 w-4" />
-          English
+          {language === "en" ? "English" : "বাংলা"}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
-          English
+        <DropdownMenuItem
+          onClick={() => handleLanguageChange("en")}
+          className={language === "en" ? "bg-primary/10 font-medium" : ""}
+        >
+          <span className="mr-2">🇺🇸</span> English
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleLanguageChange("bn")}>
-          বাংলা
+        <DropdownMenuItem
+          onClick={() => handleLanguageChange("bn")}
+          className={language === "bn" ? "bg-primary/10 font-medium" : ""}
+        >
+          <span className="mr-2">🇧🇩</span> বাংলা (Bengali)
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,41 +1,48 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Loader2 } from "lucide-react"
-import VideoConsultation from "@/components/video-call/video-consultation"
-import { getAppointment } from "@/lib/api/appointments"
-import type { Appointment } from "@/lib/api/types"
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { use } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2 } from "lucide-react";
+import VideoConsultation from "@/components/video-call/video-consultation";
+import { getAppointment } from "@/lib/api/appointments";
+import type { Appointment } from "@/lib/api/types";
 
 export default function JoinAppointmentPage() {
-  const params = useParams()
-  const appointmentId = params.id as string
+  const params = useParams();
+  const appointmentId = use(params).id as string;
 
-  const [loading, setLoading] = useState(true)
-  const [appointment, setAppointment] = useState<Appointment | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true);
+  const [appointment, setAppointment] = useState<Appointment | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // For demo purposes, we'll assume the current user is the patient
-  const isDoctor = false
+  const isDoctor = false;
 
   useEffect(() => {
     async function fetchAppointment() {
       try {
-        const appointmentData = await getAppointment(appointmentId)
-        setAppointment(appointmentData)
+        const appointmentData = await getAppointment(appointmentId);
+        setAppointment(appointmentData);
       } catch (err) {
-        console.error("Error fetching appointment:", err)
-        setError("Failed to load appointment details")
+        console.error("Error fetching appointment:", err);
+        setError("Failed to load appointment details");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchAppointment()
-  }, [appointmentId])
+    fetchAppointment();
+  }, [appointmentId]);
 
   if (loading) {
     return (
@@ -45,7 +52,7 @@ export default function JoinAppointmentPage() {
           <p>Loading appointment details...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error || !appointment) {
@@ -54,14 +61,16 @@ export default function JoinAppointmentPage() {
         <Card>
           <CardHeader>
             <CardTitle>Error</CardTitle>
-            <CardDescription>{error || "Could not find appointment details"}</CardDescription>
+            <CardDescription>
+              {error || "Could not find appointment details"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={() => window.history.back()}>Go Back</Button>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -71,7 +80,8 @@ export default function JoinAppointmentPage() {
           <CardHeader>
             <CardTitle>Video Consultation</CardTitle>
             <CardDescription>
-              Appointment with Dr. {appointment.doctorId} on {appointment.date} at {appointment.time}
+              Appointment with Dr. {appointment.doctorId} on {appointment.date}{" "}
+              at {appointment.time}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -119,13 +129,17 @@ export default function JoinAppointmentPage() {
                   <CardContent className="space-y-4">
                     <div>
                       <h3 className="font-medium">Symptoms</h3>
-                      <p className="text-sm text-muted-foreground">{appointment.symptoms || "No symptoms recorded"}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {appointment.symptoms || "No symptoms recorded"}
+                      </p>
                     </div>
 
                     <div>
                       <h3 className="font-medium">Urgency Score</h3>
                       <p className="text-sm text-muted-foreground">
-                        {appointment.urgencyScore ? `${appointment.urgencyScore}/10` : "Not assessed"}
+                        {appointment.urgencyScore
+                          ? `${appointment.urgencyScore}/10`
+                          : "Not assessed"}
                       </p>
                     </div>
 
@@ -141,5 +155,5 @@ export default function JoinAppointmentPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -58,26 +58,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         // Only run in browser environment after hydration
         if (!isClient) {
+          console.log("Not client side yet, skipping auth check");
           return;
         }
 
+        console.log("Checking authentication status...");
         const token = localStorage.getItem("token");
+        console.log("Token in localStorage:", token ? "exists" : "not found");
+
         if (!token) {
+          console.log("No token found, user is not authenticated");
           setIsLoading(false);
           return;
         }
 
         // Validate token and get user data
-        const response = await fetch("/api/auth/validate", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        console.log("Validating token...");
+        let response;
+        try {
+          response = await fetch("/api/auth/validate", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log("Token validation response status:", response.status);
+        } catch (fetchError) {
+          console.error("Token validation fetch error:", fetchError);
+          setIsLoading(false);
+          return;
+        }
 
         if (response.ok) {
-          const data = await response.json();
-          setUser(data.user);
+          try {
+            const data = await response.json();
+            console.log("Token validation successful, user data:", data.user);
+            setUser(data.user);
+          } catch (jsonError) {
+            console.error("Failed to parse validation response:", jsonError);
+            localStorage.removeItem("token");
+          }
         } else {
+          console.log("Token validation failed, removing token");
           // Token is invalid, remove it
           localStorage.removeItem("token");
         }
@@ -89,7 +110,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     if (isClient) {
+      console.log("Client-side rendering detected, checking auth");
       checkAuth();
+    } else {
+      console.log("Server-side rendering, skipping auth check");
     }
   }, [isClient]);
 
@@ -97,14 +121,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     setError(null);
 
+    console.log("Auth context login method called with email:", email);
+
     try {
-      const { user, token } = await apiLogin({ email, password });
+      console.log("Calling API login function...");
+
+      // Use direct fetch instead of the apiLogin function for debugging
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log("Login API response status:", response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Login API error:", errorData);
+        throw new Error(errorData.message || "Login failed");
+      }
+
+      const data = await response.json();
+      console.log("Login API success, received data:", {
+        hasUser: !!data.user,
+        hasToken: !!data.token,
+        userRole: data.user?.role,
+      });
+
+      const { user, token } = data;
+
       if (isClient) {
+        console.log("Storing token in localStorage");
         localStorage.setItem("token", token);
       }
+
+      console.log("Setting user in auth context");
       setUser(user);
+
+      console.log("Redirecting to dashboard");
       router.push("/dashboard");
     } catch (err: any) {
+      console.error("Login error in auth context:", err);
       setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);

@@ -27,7 +27,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { login, setToken } from "@/lib/api/auth";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n-simple";
 
 // Get language for validation messages
 const getFormSchema = (language: string) =>
@@ -69,16 +69,64 @@ export default function LoginForm() {
     setIsLoading(true);
     setError(null);
 
+    console.log("Login attempt with:", { email: values.email });
+
     try {
-      const { token, user } = await login({
-        email: values.email,
-        password: values.password,
-      });
+      // Add more detailed debugging
+      console.log("Sending login request...");
+
+      // Use a try-catch block specifically for the fetch operation
+      let response;
+      try {
+        response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+          }),
+        });
+        console.log("Fetch completed successfully");
+      } catch (fetchError) {
+        console.error("Fetch operation failed:", fetchError);
+        throw new Error("Network error: Could not connect to the server");
+      }
+
+      console.log("Login response status:", response.status);
+
+      // Try to parse the JSON response
+      let data;
+      try {
+        data = await response.json();
+        console.log("Login response data:", data);
+      } catch (jsonError) {
+        console.error("Failed to parse JSON response:", jsonError);
+        throw new Error("Invalid response from server");
+      }
+
+      if (!response.ok) {
+        console.error("Response not OK:", response.status, data);
+        throw new Error(data.message || "Login failed");
+      }
+
+      const { token, user } = data;
 
       // Store token
-      setToken(token);
+      console.log("Storing token:", token ? "Token exists" : "No token");
+      console.log("User data:", user);
+
+      // Explicitly log localStorage operations
+      try {
+        localStorage.setItem("token", token);
+        console.log("Token stored in localStorage");
+      } catch (storageError) {
+        console.error("Failed to store token in localStorage:", storageError);
+      }
 
       // Redirect based on user role
+      console.log("Redirecting based on role:", user.role);
       if (user.role === "admin") {
         router.push("/admin/dashboard");
       } else if (user.role === "doctor") {
@@ -175,6 +223,51 @@ export default function LoginForm() {
           </Button>
         </form>
       </Form>
+
+      {/* Direct login button for testing */}
+      <div className="mt-6">
+        <Button
+          className="w-full bg-green-600 hover:bg-green-700"
+          onClick={async () => {
+            try {
+              console.log("Test login button clicked");
+              const response = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: "test@example.com",
+                  password: "password123",
+                }),
+              });
+
+              console.log("Login response status:", response.status);
+
+              const data = await response.json();
+              console.log("Login response data:", data);
+
+              if (response.ok) {
+                console.log("Login successful, storing token");
+                localStorage.setItem("token", data.token);
+                console.log("Redirecting to dashboard");
+                router.push("/dashboard");
+              } else {
+                console.error("Login failed:", data.message);
+                setError("Login failed: " + data.message);
+              }
+            } catch (err) {
+              console.error("Test login error:", err);
+              setError(
+                "Test login error: " +
+                  (err instanceof Error ? err.message : String(err))
+              );
+            }
+          }}
+        >
+          Test Login (Hardcoded Credentials)
+        </Button>
+      </div>
 
       <div className="mt-6 text-center">
         <Link
