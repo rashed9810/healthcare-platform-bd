@@ -2,16 +2,19 @@
 
 import React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SidebarWrapper } from "@/components/sidebar";
 import { AuthProvider } from "@/contexts/auth-context";
 import { I18nProvider } from "@/lib/i18n-simple";
+
+// Import SidebarProvider directly to avoid circular dependencies
+import { SidebarProvider } from "@/components/ui/sidebar";
+import dynamic from "next/dynamic";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <AuthProvider>
         <I18nProvider>
-          <SidebarWrapper>{children}</SidebarWrapper>
+          <SidebarProvider>{children}</SidebarProvider>
         </I18nProvider>
       </AuthProvider>
     </ThemeProvider>
