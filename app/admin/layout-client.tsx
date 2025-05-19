@@ -45,7 +45,7 @@ export default function AdminLayout({
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
       <SidebarProvider defaultOpen={true}>
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen bg-background">
           <Sidebar>
             <SidebarHeader>
               <div className="p-2">
