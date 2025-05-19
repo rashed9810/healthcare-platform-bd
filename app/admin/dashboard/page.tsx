@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import {
   Card,
   CardContent,
@@ -8,6 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Calendar, Users, Activity, DollarSign } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default function AdminDashboardPage() {
   return (
@@ -75,14 +75,16 @@ export default function AdminDashboardPage() {
         <CardHeader>
           <CardTitle>Admin Dashboard</CardTitle>
           <CardDescription>
-            This is a simplified version of the admin dashboard. The full version with doctor management, 
-            appointment tracking, and system settings will be available in the next update.
+            This is a simplified version of the admin dashboard. The full
+            version with doctor management, appointment tracking, and system
+            settings will be available in the next update.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p>
-            The admin dashboard provides an overview of your healthcare system's performance.
-            You can monitor appointments, doctor activity, patient satisfaction, and revenue.
+            The admin dashboard provides an overview of your healthcare system's
+            performance. You can monitor appointments, doctor activity, patient
+            satisfaction, and revenue.
           </p>
         </CardContent>
       </Card>
