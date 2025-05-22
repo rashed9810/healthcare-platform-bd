@@ -125,7 +125,7 @@ function HomeContent() {
             size="lg"
             className="relative group overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 px-8 py-6 text-lg"
           >
-            <Link href="/symptom-checker">
+            <Link href="/login">
               Get Started
               <span className="absolute inset-0 w-full h-full bg-white/10 group-hover:bg-white/20 transition-colors duration-300"></span>
             </Link>

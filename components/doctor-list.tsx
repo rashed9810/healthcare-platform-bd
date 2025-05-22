@@ -189,6 +189,7 @@ export default function DoctorList({
   const [expandedDoctorId, setExpandedDoctorId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [error, setError] = useState<string | null>(null);
   const doctorsPerPage = 4;
 
   // Simulate loading state when filters change
@@ -279,6 +280,36 @@ export default function DoctorList({
   const toggleExpand = (id: number) => {
     setExpandedDoctorId(expandedDoctorId === id ? null : id);
   };
+
+  const fetchDoctorData = async (doctorId: number) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(`/api/doctors/${doctorId}`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError("Doctor not found.");
+        } else {
+          setError("An error occurred while fetching doctor data.");
+        }
+        return;
+      }
+      const data = await response.json();
+      console.log(data); // Handle the fetched data as needed
+    } catch (err) {
+      setError("Failed to fetch doctor data.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDoctorData(1); // Example doctor ID for testing
+  }, []);
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -489,7 +520,7 @@ export default function DoctorList({
                       <Button
                         asChild
                         size="lg"
-                        className="w-full h-12 transition-all duration-150 hover:scale-[1.02] hover:shadow-[0_0_8px_rgba(59,130,246,0.4)] bg-[#3b82f6] hover:bg-[#2563eb] text-white font-medium flex items-center justify-center"
+                        className="w-full py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md transition"
                       >
                         <Link
                           href={`/book-appointment/${doctor.id}`}
@@ -505,7 +536,7 @@ export default function DoctorList({
                         asChild
                         variant="outline"
                         size="lg"
-                        className="w-full h-12 transition-all duration-150 hover:scale-[1.02] hover:shadow-[0_0_8px_rgba(59,130,246,0.2)] border-2 border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6]/5 flex items-center justify-center"
+                        className="w-full py-2 text-sm font-semibold text-blue-600 border-blue-600 hover:bg-blue-50 rounded-lg shadow-md transition"
                       >
                         <Link
                           href={`/book-appointment/${doctor.id}?type=video`}

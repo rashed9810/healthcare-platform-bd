@@ -28,6 +28,7 @@ export interface Doctor extends User {
   reviewCount: number;
   consultationFee: number;
   bio: string;
+  image?: string; // Optional field to include doctor profile images
 }
 
 export interface MedicalRecord {
@@ -52,6 +53,11 @@ export interface Appointment {
   urgencyScore?: number;
   prescription?: string;
   followUp?: boolean;
+  paymentStatus?: PaymentStatus;
+  paymentMethod?: PaymentMethod;
+  paymentId?: string;
+  fee?: number;
+  doctor?: Doctor; // Optional field to include doctor details in the appointment
 }
 
 export interface TimeSlot {
@@ -81,6 +87,44 @@ export interface DoctorRecommendation {
   doctorId: string;
   matchScore: number;
   reason: string;
+}
+
+export type PaymentMethod = "bkash" | "nagad" | "rocket" | "card" | "cash";
+
+export type PaymentStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed"
+  | "cancelled";
+
+export interface PaymentDetails {
+  id: string;
+  appointmentId: string;
+  amount: number;
+  currency: string;
+  method: PaymentMethod;
+  status: PaymentStatus;
+  transactionId?: string;
+  createdAt: string;
+  updatedAt: string;
+  metadata?: Record<string, any>;
+}
+
+export interface PaymentRequest {
+  appointmentId: string;
+  amount: number;
+  method: PaymentMethod;
+  returnUrl: string;
+  metadata?: Record<string, any>;
+}
+
+export interface PaymentResponse {
+  success: boolean;
+  paymentId?: string;
+  redirectUrl?: string;
+  message?: string;
+  status?: PaymentStatus;
 }
 
 export interface SymptomData {

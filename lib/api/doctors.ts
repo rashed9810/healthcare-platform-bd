@@ -1,40 +1,40 @@
 // Doctor API client
 
-import type { Doctor, DoctorRecommendation } from "./types"
-import { getToken } from "./auth"
+import type { Doctor, DoctorRecommendation } from "./types";
+import { getToken } from "./auth";
 
 interface DoctorFilters {
-  specialty?: string
-  location?: string
-  language?: string
-  availability?: string
-  rating?: number
+  specialty?: string;
+  location?: string;
+  language?: string;
+  availability?: string;
+  rating?: number;
 }
 
 export async function getDoctors(filters?: DoctorFilters): Promise<Doctor[]> {
   try {
-    const queryParams = new URLSearchParams()
+    const queryParams = new URLSearchParams();
 
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value.toString())
-      })
+        if (value) queryParams.append(key, value.toString());
+      });
     }
 
     const response = await fetch(`/api/doctors?${queryParams.toString()}`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
-    })
+    });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch doctors")
+      throw new Error("Failed to fetch doctors");
     }
 
-    return await response.json()
+    return await response.json();
   } catch (error) {
-    console.error("Error fetching doctors:", error)
-    throw error
+    console.error("Error fetching doctors:", error);
+    throw error;
   }
 }
 
@@ -44,20 +44,33 @@ export async function getDoctor(id: string): Promise<Doctor> {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
-    })
+    });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch doctor")
+      const errorDetails = await response.text();
+      console.error(
+        `Failed to fetch doctor with ID: ${id}. URL: /api/doctors/${id}. Status: ${response.status}. Response:`,
+        errorDetails
+      );
+
+      if (response.status === 404) {
+        console.warn(`Doctor with ID: ${id} not found.`);
+        throw new Error("Doctor not found");
+      }
+
+      throw new Error("Failed to fetch doctor");
     }
 
-    return await response.json()
+    return await response.json();
   } catch (error) {
-    console.error(`Error fetching doctor ${id}:`, error)
-    throw error
+    console.error(`Error fetching doctor with ID: ${id}:`, error);
+    throw error;
   }
 }
 
-export async function getRecommendedDoctors(symptoms: string): Promise<DoctorRecommendation[]> {
+export async function getRecommendedDoctors(
+  symptoms: string
+): Promise<DoctorRecommendation[]> {
   try {
     const response = await fetch("/api/doctors/recommend", {
       method: "POST",
@@ -66,15 +79,15 @@ export async function getRecommendedDoctors(symptoms: string): Promise<DoctorRec
         Authorization: `Bearer ${getToken()}`,
       },
       body: JSON.stringify({ symptoms }),
-    })
+    });
 
     if (!response.ok) {
-      throw new Error("Failed to get doctor recommendations")
+      throw new Error("Failed to get doctor recommendations");
     }
 
-    return await response.json()
+    return await response.json();
   } catch (error) {
-    console.error("Error getting doctor recommendations:", error)
-    throw error
+    console.error("Error getting doctor recommendations:", error);
+    throw error;
   }
 }

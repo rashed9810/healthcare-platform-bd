@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+  const isAdminRoute = pathname.startsWith("/admin");
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
@@ -29,9 +32,9 @@ export default function RootLayout({
           enableSystem={false}
         >
           <div className="flex flex-col min-h-screen">
-            <Header />
+            {!isAdminRoute && <Header />}
             <div className="flex-1">{children}</div>
-            <Footer />
+            {!isAdminRoute && <Footer />}
           </div>
         </ThemeProvider>
       </body>
