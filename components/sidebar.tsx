@@ -23,6 +23,9 @@ import {
   Stethoscope,
   LogOut,
   Pill,
+  FileText,
+  Bell,
+  BarChart3,
 } from "lucide-react";
 import { isAuthenticated } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
@@ -130,6 +133,51 @@ export function AppSidebar() {
                       <Pill className="h-5 w-5 text-primary group-hover:text-primary" />
                       <span className="group-hover:text-primary">
                         Prescriptions
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive("/medical-records")}
+                    className="group transition-colors hover:bg-primary/5"
+                  >
+                    <Link href="/medical-records">
+                      <FileText className="h-5 w-5 text-primary group-hover:text-primary" />
+                      <span className="group-hover:text-primary">
+                        Medical Records
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive("/health-reminders")}
+                    className="group transition-colors hover:bg-primary/5"
+                  >
+                    <Link href="/health-reminders">
+                      <Bell className="h-5 w-5 text-primary group-hover:text-primary" />
+                      <span className="group-hover:text-primary">
+                        Health Reminders
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive("/health-analytics")}
+                    className="group transition-colors hover:bg-primary/5"
+                  >
+                    <Link href="/health-analytics">
+                      <BarChart3 className="h-5 w-5 text-primary group-hover:text-primary" />
+                      <span className="group-hover:text-primary">
+                        Health Analytics
                       </span>
                     </Link>
                   </SidebarMenuButton>
