@@ -29,26 +29,29 @@ export default function HeroSection() {
                 medical advice from the comfort of your home.
               </p>
             </div>
-            <div className="flex flex-col gap-3 min-[400px]:flex-row">
+            <div className="flex flex-col gap-4 min-[400px]:flex-row">
               <Button
                 asChild
-                size="lg"
-                className="relative group overflow-hidden shadow-md transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_0_10px_rgba(68,138,255,0.3)] transform-gpu"
+                size="xl"
+                className="healthcare-gradient text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-0"
               >
-                <Link href="/symptom-checker" className="flex items-center">
+                <Link
+                  href="/symptom-checker"
+                  className="flex items-center gap-2"
+                >
                   Check Symptoms
-                  <span className="absolute inset-0 w-full h-full bg-white/10 group-hover:bg-white/20 transition-colors duration-200"></span>
+                  <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
-                size="lg"
-                className="border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-200 relative group hover:shadow-[0_0_10px_rgba(68,138,255,0.2)] dark:text-white"
+                size="xl"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
               >
-                <Link href="/find-doctor">
+                <Link href="/find-doctor" className="flex items-center gap-2">
                   Find a Doctor
-                  <span className="absolute inset-0 w-full h-full group-hover:shadow-[inset_0_0_0_1.5px] group-hover:shadow-primary/50 rounded-md transition-all duration-200"></span>
+                  <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
             </div>

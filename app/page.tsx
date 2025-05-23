@@ -122,12 +122,12 @@ function HomeContent() {
         <div className="mt-16 text-center">
           <Button
             asChild
-            size="lg"
-            className="relative group overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 px-8 py-6 text-lg"
+            size="xl"
+            className="healthcare-gradient text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-0"
           >
-            <Link href="/login">
+            <Link href="/login" className="flex items-center gap-2">
               Get Started
-              <span className="absolute inset-0 w-full h-full bg-white/10 group-hover:bg-white/20 transition-colors duration-300"></span>
+              <ArrowRight className="h-5 w-5" />
             </Link>
           </Button>
         </div>

@@ -517,16 +517,12 @@ export default function DoctorList({
                     {/* Action buttons section */}
                     <div className="md:col-span-1 bg-gradient-to-b from-blue-50 to-slate-50 dark:from-slate-900/40 dark:to-slate-800/20 p-5 md:p-6 flex flex-col justify-center items-center gap-4 rounded-r-lg">
                       {/* Primary Button - Book Appointment */}
-                      <Button
-                        asChild
-                        size="lg"
-                        className="w-full py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md transition"
-                      >
+                      <Button asChild size="lg" className="w-full">
                         <Link
                           href={`/book-appointment/${doctor.id}`}
-                          className="flex items-center justify-center w-full"
+                          className="flex items-center justify-center w-full gap-2"
                         >
-                          <Calendar className="h-5 w-5 mr-2" />
+                          <Calendar className="h-5 w-5" />
                           <span>Book Appointment</span>
                         </Link>
                       </Button>
@@ -536,13 +532,13 @@ export default function DoctorList({
                         asChild
                         variant="outline"
                         size="lg"
-                        className="w-full py-2 text-sm font-semibold text-blue-600 border-blue-600 hover:bg-blue-50 rounded-lg shadow-md transition"
+                        className="w-full"
                       >
                         <Link
                           href={`/book-appointment/${doctor.id}?type=video`}
-                          className="flex items-center justify-center w-full"
+                          className="flex items-center justify-center w-full gap-2"
                         >
-                          <Video className="h-5 w-5 mr-2" />
+                          <Video className="h-5 w-5" />
                           <span>Video Consultation</span>
                         </Link>
                       </Button>
@@ -550,8 +546,9 @@ export default function DoctorList({
                       {/* Secondary Button - View Full Profile */}
                       <Button
                         asChild
+                        variant="secondary"
                         size="lg"
-                        className="w-full h-12 transition-all duration-150 hover:scale-[1.02] bg-[#1f2937] hover:bg-[#111827] text-white font-medium flex items-center justify-center"
+                        className="w-full"
                       >
                         <Link
                           href={`/doctor/${doctor.id}`}

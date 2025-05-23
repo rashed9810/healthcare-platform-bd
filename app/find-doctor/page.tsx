@@ -334,7 +334,7 @@ export default function FindDoctorPage() {
 
                         <div className="flex gap-2 pt-2">
                           <Button
-                            className="flex-1 transition-all duration-150 hover:scale-[1.02] hover:shadow-[0_0_8px_rgba(68,138,255,0.4)] bg-[#3b82f6] hover:bg-[#2563eb] text-white font-medium h-11"
+                            className="flex-1"
                             onClick={() => {
                               applyFilters();
                               setIsOpen(false);
@@ -537,10 +537,7 @@ export default function FindDoctorPage() {
                     </Select>
                   </div>
 
-                  <Button
-                    className="w-full transition-all duration-150 hover:scale-[1.02] hover:shadow-[0_0_8px_rgba(68,138,255,0.4)] bg-[#3b82f6] hover:bg-[#2563eb] text-white font-medium h-11"
-                    onClick={applyFilters}
-                  >
+                  <Button className="w-full" onClick={applyFilters}>
                     Apply Filters
                   </Button>
                 </div>
