@@ -3,6 +3,8 @@ import { verifyAuth } from "@/lib/auth-middleware";
 import { connectToDatabase } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { verifyPaymentWithGateway } from "@/lib/api/payment-gateways";
+import { stopPaymentTracking } from "@/lib/api/payment-status-tracker";
+import { sendPaymentNotification } from "@/lib/api/payment-notifications";
 
 export async function POST(request: Request) {
   try {
@@ -27,10 +29,12 @@ export async function POST(request: Request) {
     const db = await connectToDatabase();
     const paymentsCollection = db.collection("payments");
     const appointmentsCollection = db.collection("appointments");
+    const usersCollection = db.collection("users");
 
-    // Check if payment exists
+    // Check if payment exists and belongs to the authenticated user
     const payment = await paymentsCollection.findOne({
       _id: new ObjectId(paymentId),
+      patientId: new ObjectId(authResult.user.id),
     });
 
     if (!payment) {
@@ -40,65 +44,108 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify the payment with the payment gateway
-    try {
-      const isVerified = await verifyPaymentWithGateway(
-        payment.method,
-        paymentId,
-        transactionId
-      );
+    // Get user details for notifications
+    const user = await usersCollection.findOne({
+      _id: new ObjectId(authResult.user.id),
+    });
 
-      if (!isVerified) {
-        return NextResponse.json(
-          { message: "Transaction verification failed" },
-          { status: 400 }
+    // Use enhanced payment verification
+    const verification = await verifyPaymentWithGateway(
+      payment.method,
+      paymentId,
+      transactionId
+    );
+
+    if (!verification.verified) {
+      // Send failure notification
+      if (user) {
+        await sendPaymentNotification(
+          {
+            type: "payment_failed",
+            paymentId,
+            appointmentId: payment.appointmentId.toString(),
+            patientId: authResult.user.id,
+            amount: payment.amount,
+            method: payment.method,
+            status: "failed",
+            transactionId,
+            timestamp: new Date().toISOString(),
+          },
+          user.phone || "",
+          user.email || ""
         );
       }
-    } catch (error: any) {
-      console.error("Error verifying payment with gateway:", error);
+
       return NextResponse.json(
-        { message: error.message || "Transaction verification failed" },
-        { status: 500 }
+        { message: "Payment verification failed" },
+        { status: 400 }
       );
     }
 
-    // Update payment status
+    // Update payment status with enhanced data
+    const updateData = {
+      status: "completed",
+      transactionId,
+      verifiedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      gatewayResponse: {
+        amount: verification.amount,
+        status: verification.status,
+        verifiedAmount: verification.amount,
+      },
+    };
+
     await paymentsCollection.updateOne(
       { _id: new ObjectId(paymentId) },
-      {
-        $set: {
-          status: "completed",
-          transactionId,
-          updatedAt: new Date().toISOString(),
-        },
-      }
+      { $set: updateData }
     );
 
-    // Update appointment payment status
+    // Update appointment status
     await appointmentsCollection.updateOne(
-      { paymentId },
+      { _id: new ObjectId(payment.appointmentId) },
       {
         $set: {
           paymentStatus: "completed",
+          status: "confirmed",
+          confirmedAt: new Date().toISOString(),
         },
       }
     );
 
-    // Get updated payment
-    const updatedPayment = await paymentsCollection.findOne({
-      _id: new ObjectId(paymentId),
-    });
+    // Stop payment tracking
+    stopPaymentTracking(paymentId);
+
+    // Send success notification
+    if (user) {
+      await sendPaymentNotification(
+        {
+          type: "payment_completed",
+          paymentId,
+          appointmentId: payment.appointmentId.toString(),
+          patientId: authResult.user.id,
+          amount: verification.amount || payment.amount,
+          method: payment.method,
+          status: "completed",
+          transactionId,
+          timestamp: new Date().toISOString(),
+        },
+        user.phone || "",
+        user.email || ""
+      );
+    }
 
     return NextResponse.json({
-      id: updatedPayment._id.toString(),
-      appointmentId: updatedPayment.appointmentId.toString(),
-      amount: updatedPayment.amount,
-      currency: updatedPayment.currency,
-      method: updatedPayment.method,
-      status: updatedPayment.status,
-      transactionId: updatedPayment.transactionId,
-      createdAt: updatedPayment.createdAt,
-      updatedAt: updatedPayment.updatedAt,
+      success: true,
+      message: "Payment verified successfully",
+      paymentId,
+      transactionId,
+      status: "completed",
+      amount: verification.amount || payment.amount,
+      verificationDetails: {
+        gatewayStatus: verification.status,
+        verifiedAmount: verification.amount,
+        verifiedAt: new Date().toISOString(),
+      },
     });
   } catch (error) {
     console.error("Error verifying payment:", error);

@@ -3,6 +3,8 @@ import { verifyAuth } from "@/lib/auth-middleware";
 import { connectToDatabase } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { generatePaymentUrl } from "@/lib/api/payment-gateways";
+import { startPaymentTracking } from "@/lib/api/payment-status-tracker";
+import { sendPaymentNotification } from "@/lib/api/payment-notifications";
 
 export async function POST(request: Request) {
   try {
@@ -27,6 +29,7 @@ export async function POST(request: Request) {
     const db = await connectToDatabase();
     const appointmentsCollection = db.collection("appointments");
     const paymentsCollection = db.collection("payments");
+    const usersCollection = db.collection("users");
 
     // Check if appointment exists
     const appointment = await appointmentsCollection.findOne({
@@ -71,6 +74,34 @@ export async function POST(request: Request) {
         },
       }
     );
+
+    // Get user details for notifications
+    const user = await usersCollection.findOne({
+      _id: new ObjectId(authResult.user.id),
+    });
+
+    // Start payment tracking for non-cash payments
+    if (method !== "cash") {
+      startPaymentTracking(paymentId.toString(), method, amount);
+    }
+
+    // Send payment initiation notification
+    if (user) {
+      await sendPaymentNotification(
+        {
+          type: "payment_initiated",
+          paymentId: paymentId.toString(),
+          appointmentId,
+          patientId: authResult.user.id,
+          amount,
+          method,
+          status: method === "cash" ? "completed" : "pending",
+          timestamp: new Date().toISOString(),
+        },
+        user.phone || "",
+        user.email || ""
+      );
+    }
 
     // For cash payments, return success immediately
     if (method === "cash") {
