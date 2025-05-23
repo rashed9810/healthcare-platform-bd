@@ -1,6 +1,6 @@
 /**
  * Python Backend Integration Service
- * 
+ *
  * Service to integrate Next.js frontend with Python FastAPI backend
  */
 
@@ -21,7 +21,7 @@ export interface SymptomAnalysisResult {
   analysis_id: string;
   symptoms: string[];
   confidence: number;
-  emergency_level: 'low' | 'medium' | 'high';
+  emergency_level: "low" | "medium" | "high";
   recommendations: string[];
   possible_conditions: Array<{
     name: string;
@@ -57,7 +57,17 @@ export interface AppointmentEnhancementResult {
 }
 
 class PythonBackendService {
-  private baseUrl = '/api/python-backend';
+  private baseUrl = "/api/python-backend";
+
+  /**
+   * Get authentication token from localStorage
+   */
+  private getAuthToken(): string | null {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("token");
+    }
+    return null;
+  }
 
   /**
    * Make a request to the Python backend
@@ -65,17 +75,26 @@ class PythonBackendService {
   private async makeRequest<T>(
     endpoint: string,
     data?: any,
-    method: 'GET' | 'POST' = 'POST'
+    method: "GET" | "POST" = "POST"
   ): Promise<PythonBackendResponse<T>> {
     try {
+      const token = this.getAuthToken();
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      // Add authorization header if token exists
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(this.baseUrl, {
-        method: method === 'GET' ? 'GET' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: method === 'GET' 
-          ? undefined 
-          : JSON.stringify({ endpoint, data, method }),
+        method: method === "GET" ? "GET" : "POST",
+        headers,
+        body:
+          method === "GET"
+            ? undefined
+            : JSON.stringify({ endpoint, data, method }),
       });
 
       if (!response.ok) {
@@ -84,7 +103,7 @@ class PythonBackendService {
 
       return await response.json();
     } catch (error) {
-      console.error('Python backend request failed:', error);
+      console.error("Python backend request failed:", error);
       throw error;
     }
   }
@@ -94,47 +113,86 @@ class PythonBackendService {
    */
   async testConnection(): Promise<boolean> {
     try {
-      const response = await this.makeRequest('/api/v1/test/connection', undefined, 'GET');
-      return response.success && response.data.status === 'connected';
+      // Try health check first (simpler and no auth required)
+      const healthResponse = await this.getHealthStatus();
+      if (healthResponse.success) {
+        return true;
+      }
+
+      // Fallback to connection test endpoint
+      const response = await this.makeRequest(
+        "/api/v1/test/connection",
+        undefined,
+        "GET"
+      );
+      return response.success && response.data.status === "connected";
     } catch (error) {
-      console.error('Connection test failed:', error);
+      console.error("Connection test failed:", error);
       return false;
     }
   }
 
   /**
-   * Get Python backend health status
+   * Get Python backend health status (no auth required)
    */
   async getHealthStatus(): Promise<PythonBackendResponse<any>> {
-    return this.makeRequest('/health', undefined, 'GET');
+    try {
+      // Try direct health check first (no auth required)
+      const response = await fetch(`${this.baseUrl}?endpoint=/health`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        return await response.json();
+      }
+
+      // Fallback to authenticated request
+      return this.makeRequest("/health", undefined, "GET");
+    } catch (error) {
+      console.error("Health status check failed:", error);
+      throw error;
+    }
   }
 
   /**
    * Analyze symptoms using Python AI backend
    */
-  async analyzeSymptoms(request: SymptomAnalysisRequest): Promise<PythonBackendResponse<SymptomAnalysisResult>> {
-    return this.makeRequest<SymptomAnalysisResult>('/api/v1/symptoms/analyze', request);
+  async analyzeSymptoms(
+    request: SymptomAnalysisRequest
+  ): Promise<PythonBackendResponse<SymptomAnalysisResult>> {
+    return this.makeRequest<SymptomAnalysisResult>(
+      "/api/v1/symptoms/analyze",
+      request
+    );
   }
 
   /**
    * Enhance appointment with AI insights
    */
-  async enhanceAppointment(request: AppointmentEnhancementRequest): Promise<PythonBackendResponse<AppointmentEnhancementResult>> {
-    return this.makeRequest<AppointmentEnhancementResult>('/api/v1/appointments/enhance', request);
+  async enhanceAppointment(
+    request: AppointmentEnhancementRequest
+  ): Promise<PythonBackendResponse<AppointmentEnhancementResult>> {
+    return this.makeRequest<AppointmentEnhancementResult>(
+      "/api/v1/appointments/enhance",
+      request
+    );
   }
 
   /**
    * Sync data with Python backend
    */
   async syncData(type: string, data: any): Promise<PythonBackendResponse<any>> {
-    return this.makeRequest('/api/v1/integration/sync', { type, data });
+    return this.makeRequest("/api/v1/integration/sync", { type, data });
   }
 
   /**
    * Get analytics summary from Python backend
    */
   async getAnalyticsSummary(): Promise<PythonBackendResponse<any>> {
-    return this.makeRequest('/api/v1/analytics/summary', undefined, 'GET');
+    return this.makeRequest("/api/v1/analytics/summary", undefined, "GET");
   }
 
   /**
@@ -173,22 +231,24 @@ class PythonBackendService {
       }
 
       // Step 2: Enhance appointment with AI
-      const enhancementResponse = await this.enhanceAppointment(appointmentData);
+      const enhancementResponse = await this.enhanceAppointment(
+        appointmentData
+      );
       if (enhancementResponse.success) {
         enhancement = enhancementResponse.data;
       }
 
       // Step 3: Book appointment through regular Next.js API
-      const appointmentResponse = await fetch('/api/appointments', {
-        method: 'POST',
+      const appointmentResponse = await fetch("/api/appointments", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...appointmentData,
           ai_analysis: aiAnalysis,
           ai_enhancement: enhancement,
-          booking_source: 'ai_enhanced',
+          booking_source: "ai_enhanced",
         }),
       });
 
@@ -199,9 +259,8 @@ class PythonBackendService {
         aiAnalysis,
         enhancement,
       };
-
     } catch (error) {
-      console.error('AI-enhanced booking failed:', error);
+      console.error("AI-enhanced booking failed:", error);
       throw error;
     }
   }
@@ -209,7 +268,10 @@ class PythonBackendService {
   /**
    * Get AI recommendations for a patient
    */
-  async getAIRecommendations(patientId: string, symptoms?: string[]): Promise<{
+  async getAIRecommendations(
+    patientId: string,
+    symptoms?: string[]
+  ): Promise<{
     symptomAnalysis?: SymptomAnalysisResult;
     recommendations: string[];
     urgencyLevel: string;
@@ -227,25 +289,29 @@ class PythonBackendService {
 
       // Generate recommendations based on analysis
       const recommendations: string[] = [];
-      let urgencyLevel = 'low';
+      let urgencyLevel = "low";
       const suggestedSpecialties: string[] = [];
 
       if (symptomAnalysis) {
         recommendations.push(...symptomAnalysis.recommendations);
         urgencyLevel = symptomAnalysis.emergency_level;
-        
+
         // Extract specialties from conditions
-        symptomAnalysis.possible_conditions.forEach(condition => {
-          if (condition.name.toLowerCase().includes('heart')) {
-            suggestedSpecialties.push('Cardiology');
-          } else if (condition.name.toLowerCase().includes('lung') || 
-                     condition.name.toLowerCase().includes('respiratory')) {
-            suggestedSpecialties.push('Pulmonology');
-          } else if (condition.name.toLowerCase().includes('stomach') || 
-                     condition.name.toLowerCase().includes('gastro')) {
-            suggestedSpecialties.push('Gastroenterology');
+        symptomAnalysis.possible_conditions.forEach((condition) => {
+          if (condition.name.toLowerCase().includes("heart")) {
+            suggestedSpecialties.push("Cardiology");
+          } else if (
+            condition.name.toLowerCase().includes("lung") ||
+            condition.name.toLowerCase().includes("respiratory")
+          ) {
+            suggestedSpecialties.push("Pulmonology");
+          } else if (
+            condition.name.toLowerCase().includes("stomach") ||
+            condition.name.toLowerCase().includes("gastro")
+          ) {
+            suggestedSpecialties.push("Gastroenterology");
           } else {
-            suggestedSpecialties.push('General Medicine');
+            suggestedSpecialties.push("General Medicine");
           }
         });
       }
@@ -256,9 +322,8 @@ class PythonBackendService {
         urgencyLevel,
         suggestedSpecialties: [...new Set(suggestedSpecialties)], // Remove duplicates
       };
-
     } catch (error) {
-      console.error('Failed to get AI recommendations:', error);
+      console.error("Failed to get AI recommendations:", error);
       throw error;
     }
   }
@@ -272,11 +337,11 @@ class PythonBackendService {
     lastChecked: string;
   }> {
     const startTime = Date.now();
-    
+
     try {
       const response = await this.getHealthStatus();
       const responseTime = Date.now() - startTime;
-      
+
       return {
         isOnline: response.success,
         responseTime,

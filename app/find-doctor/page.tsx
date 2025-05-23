@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,645 +13,645 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetHeader,
+} from "@/components/ui/sheet";
 import {
-  ChevronDown,
   Filter,
   Search as SearchIcon,
-  X as XIcon,
-  HelpCircle,
   MapPin,
   Navigation,
+  Loader2,
+  AlertCircle,
+  Star,
+  Clock,
+  Users,
+  Heart,
+  Brain,
+  Eye,
+  Bone,
+  Baby,
+  Stethoscope,
+  CheckCircle,
+  ArrowRight,
+  SlidersHorizontal,
+  Calendar,
+  Video,
+  Globe,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import DoctorList from "@/components/doctor-list";
-import LocationBasedDoctorFinder from "@/components/location/location-based-doctor-finder";
+import { getDoctors } from "@/lib/api/doctors";
+import { Loading, LoadingGrid } from "@/components/ui/loading";
+import type { Doctor } from "@/lib/api/types";
+
+// Specialty icons mapping
+const specialtyIcons = {
+  "General Physician": <Stethoscope className="h-5 w-5" />,
+  Cardiologist: <Heart className="h-5 w-5" />,
+  Neurologist: <Brain className="h-5 w-5" />,
+  "Orthopedic Surgeon": <Bone className="h-5 w-5" />,
+  Pediatrician: <Baby className="h-5 w-5" />,
+  Gynecologist: <Users className="h-5 w-5" />,
+  Ophthalmologist: <Eye className="h-5 w-5" />,
+};
 
 export default function FindDoctorPage() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
-    specialty: "any",
-    location: "any",
+    specialty: "all",
+    location: "all",
+    language: "all",
     availability: "any",
-  });
-  const [activeFilters, setActiveFilters] = useState({
-    specialty: "any",
-    location: "any",
-    availability: "any",
+    rating: "any",
   });
   const [isFiltering, setIsFiltering] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
+  const [sortBy, setSortBy] = useState("rating"); // rating, distance, availability, name
 
-  // Function to apply filters
+  // Fetch doctors
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const doctorData = await getDoctors(filters);
+        setDoctors(doctorData);
+      } catch (err: any) {
+        console.error("Error fetching doctors:", err);
+
+        // Provide fallback mock data if API fails
+        const fallbackDoctors = [
+          {
+            id: "1",
+            name: "Dr. Anika Rahman",
+            specialty: "General Physician",
+            location: "Dhaka Medical College Hospital",
+            rating: 4.8,
+            reviewCount: 124,
+            languages: ["Bengali", "English"],
+            availableToday: true,
+            nextAvailable: "Today, 3:00 PM",
+            image: "/images/doctor-avatar-1.svg",
+            consultationFee: 800,
+            experience: "10+ years",
+            reviews: [
+              {
+                text: "Dr. Rahman is very caring and professional. Highly recommended!",
+                author: "Sarah Ahmed",
+              },
+              {
+                text: "Excellent diagnosis and treatment. Very satisfied with the care.",
+                author: "Mohammad Khan",
+              },
+            ],
+          },
+          {
+            id: "2",
+            name: "Dr. Mohammad Hasan",
+            specialty: "Cardiologist",
+            location: "Square Hospital",
+            rating: 4.9,
+            reviewCount: 89,
+            languages: ["Bengali", "English"],
+            availableToday: true,
+            nextAvailable: "Today, 4:00 PM",
+            image: "/images/doctor-avatar-2.svg",
+            consultationFee: 1200,
+            experience: "15+ years",
+            reviews: [
+              {
+                text: "Outstanding cardiologist. Saved my life with his expertise.",
+                author: "Fatima Begum",
+              },
+              {
+                text: "Very knowledgeable and explains everything clearly.",
+                author: "Abdul Rahman",
+              },
+            ],
+          },
+        ];
+
+        setDoctors(fallbackDoctors);
+        setError("Using offline data. Some features may be limited.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, [filters]);
+
+  // Filter and sort doctors based on search, active tab, and sort preference
+  const filteredDoctors = doctors
+    .filter((doctor) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        doctor.location.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesTab =
+        activeTab === "all" ||
+        (activeTab === "available" && doctor.availableToday) ||
+        (activeTab === "recommended" && doctor.rating >= 4.5);
+
+      return matchesSearch && matchesTab;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "rating":
+          return b.rating - a.rating;
+        case "distance":
+          // Extract numeric value from distance string (e.g., "2.3 km" -> 2.3)
+          const distanceA = parseFloat(
+            a.distance?.replace(/[^\d.]/g, "") || "999"
+          );
+          const distanceB = parseFloat(
+            b.distance?.replace(/[^\d.]/g, "") || "999"
+          );
+          return distanceA - distanceB;
+        case "availability":
+          // Available today first, then by rating
+          if (a.availableToday && !b.availableToday) return -1;
+          if (!a.availableToday && b.availableToday) return 1;
+          return b.rating - a.rating;
+        case "name":
+          return a.name.localeCompare(b.name);
+        default:
+          return b.rating - a.rating;
+      }
+    });
+
   const applyFilters = () => {
-    setActiveFilters({ ...filters });
     setIsFiltering(
-      filters.specialty !== "any" ||
-        filters.location !== "any" ||
-        filters.availability !== "any" ||
-        searchQuery.trim() !== ""
+      (filters.specialty !== "" && filters.specialty !== "all") ||
+        (filters.location !== "" && filters.location !== "all") ||
+        (filters.language !== "" && filters.language !== "all") ||
+        (filters.availability !== "" && filters.availability !== "any") ||
+        (filters.rating !== "" && filters.rating !== "any")
     );
   };
 
-  // Function to reset filters
   const resetFilters = () => {
     setFilters({
-      specialty: "any",
-      location: "any",
+      specialty: "all",
+      location: "all",
+      language: "all",
       availability: "any",
-    });
-    setActiveFilters({
-      specialty: "any",
-      location: "any",
-      availability: "any",
+      rating: "any",
     });
     setSearchQuery("");
     setIsFiltering(false);
   };
 
+  useEffect(() => {
+    applyFilters();
+  }, [filters]);
+
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-[#111827] dark:text-white">
-          Find a Doctor
-        </h1>
-        <p className="text-[#4b5563] dark:text-muted-foreground mt-2">
-          Search for healthcare professionals based on specialty, location, and
-          availability
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-teal-600 text-white">
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Find Your Perfect Doctor
+            </h1>
+            <p className="text-xl text-blue-100 mb-8">
+              Search for healthcare professionals based on specialty, location,
+              and availability
+            </p>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by doctor name, specialty, or hospital..."
+                  className="pl-12 pr-4 py-4 text-lg bg-white/95 backdrop-blur border-0 shadow-lg focus:shadow-xl transition-all duration-300"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <Tabs defaultValue="search" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-8">
-          <TabsTrigger value="search" className="flex items-center">
-            <SearchIcon className="h-4 w-4 mr-2" />
-            Search & Filter
-          </TabsTrigger>
-          <TabsTrigger value="location" className="flex items-center">
-            <MapPin className="h-4 w-4 mr-2" />
-            Nearby Doctors
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="search">
-          {/* Existing search content */}
-
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Mobile filter button - only visible on small screens */}
-            <div className="lg:hidden w-full mb-4">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="relative flex-1">
-                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary/80" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search by name, specialty, or hospital..."
-                    className="pl-10 pr-9 focus-visible:ring-primary/50 border-primary/20 focus-visible:border-primary/50"
-                  />
-                  {searchQuery && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7"
-                      onClick={() => setSearchQuery("")}
-                    >
-                      <XIcon className="h-3 w-3" />
-                      <span className="sr-only">Clear search</span>
-                    </Button>
-                  )}
-                </div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-10 w-10 flex-shrink-0"
-                      >
-                        <HelpCircle className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>
-                        Search across doctor names, specialties, and hospitals.
-                        Results update as you type.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+      <div className="container mx-auto px-4 py-8">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-white/80 backdrop-blur border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Users className="h-6 w-6 text-blue-600" />
               </div>
+              <h3 className="font-semibold text-gray-900">Total Doctors</h3>
+              <p className="text-2xl font-bold text-blue-600">
+                {doctors.length}
+              </p>
+            </CardContent>
+          </Card>
 
-              <Collapsible
-                open={isOpen}
-                onOpenChange={setIsOpen}
-                className="w-full"
-              >
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full flex items-center justify-between"
-                  >
-                    <span className="flex items-center">
-                      <Filter className="mr-2 h-4 w-4" />
-                      Filters{" "}
-                      {isFiltering && (
-                        <span className="ml-2 text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">
-                          Active
-                        </span>
-                      )}
-                    </span>
-                    <ChevronDown
-                      className="h-4 w-4 transition-transform duration-200"
-                      style={{
-                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                      }}
-                    />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="mt-4">
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="space-y-6">
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="specialty-mobile">Specialty</Label>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0"
-                                  >
-                                    <HelpCircle className="h-3 w-3" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">
-                                  <p>
-                                    Filter doctors by their medical specialty
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                          <Select
-                            value={filters.specialty}
-                            onValueChange={(value) =>
-                              setFilters({ ...filters, specialty: value })
-                            }
-                          >
-                            <SelectTrigger id="specialty-mobile">
-                              <SelectValue placeholder="Select Specialty" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="any">
-                                Select Specialty
-                              </SelectItem>
-                              <SelectItem value="general">
-                                General Physician (AI-Powered)
-                              </SelectItem>
-                              <SelectItem value="cardiology">
-                                Cardiology
-                              </SelectItem>
-                              <SelectItem value="dermatology">
-                                Dermatology
-                              </SelectItem>
-                              <SelectItem value="neurology">
-                                Neurology
-                              </SelectItem>
-                              <SelectItem value="pediatrics">
-                                Pediatrics
-                              </SelectItem>
-                              <SelectItem value="orthopedics">
-                                Orthopedics
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+          <Card className="bg-white/80 backdrop-blur border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900">Available Today</h3>
+              <p className="text-2xl font-bold text-green-600">
+                {doctors.filter((d) => d.availableToday).length}
+              </p>
+            </CardContent>
+          </Card>
 
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="location-mobile">Location</Label>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0"
-                                  >
-                                    <HelpCircle className="h-3 w-3" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">
-                                  <p>
-                                    Filter doctors by their hospital location
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                          <Select
-                            value={filters.location}
-                            onValueChange={(value) =>
-                              setFilters({ ...filters, location: value })
-                            }
-                          >
-                            <SelectTrigger id="location-mobile">
-                              <SelectValue placeholder="Select Location" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="any">
-                                Select Location
-                              </SelectItem>
-                              <SelectItem value="dhaka">Dhaka</SelectItem>
-                              <SelectItem value="chittagong">
-                                Chittagong
-                              </SelectItem>
-                              <SelectItem value="khulna">Khulna</SelectItem>
-                              <SelectItem value="rajshahi">Rajshahi</SelectItem>
-                              <SelectItem value="sylhet">Sylhet</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+          <Card className="bg-white/80 backdrop-blur border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Star className="h-6 w-6 text-yellow-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900">Top Rated</h3>
+              <p className="text-2xl font-bold text-yellow-600">
+                {doctors.filter((d) => d.rating >= 4.5).length}
+              </p>
+            </CardContent>
+          </Card>
 
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="availability-mobile">
-                              Availability
-                            </Label>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-6 w-6 p-0"
-                                  >
-                                    <HelpCircle className="h-3 w-3" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">
-                                  <p>
-                                    Filter doctors by when they're available for
-                                    appointments
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                          <Select
-                            value={filters.availability}
-                            onValueChange={(value) =>
-                              setFilters({ ...filters, availability: value })
-                            }
-                          >
-                            <SelectTrigger id="availability-mobile">
-                              <SelectValue placeholder="Select Availability Time" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="any">Any Time</SelectItem>
-                              <SelectItem value="today">Today</SelectItem>
-                              <SelectItem value="tomorrow">Tomorrow</SelectItem>
-                              <SelectItem value="this-week">
-                                This Week
-                              </SelectItem>
-                              <SelectItem value="next-week">
-                                Next Week
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+          <Card className="bg-white/80 backdrop-blur border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-6 text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Video className="h-6 w-6 text-purple-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900">Video Consult</h3>
+              <p className="text-2xl font-bold text-purple-600">
+                {doctors.length}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
-                        <div className="flex gap-2 pt-2">
-                          <Button
-                            className="flex-1"
-                            onClick={() => {
-                              applyFilters();
-                              setIsOpen(false);
-                            }}
-                          >
-                            Apply Filters
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="flex-shrink-0"
-                            onClick={resetFilters}
-                            disabled={!isFiltering}
-                          >
-                            Reset
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
+        {/* Filter Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+          <TabsList className="grid w-full grid-cols-3 bg-white/80 backdrop-blur border-0 shadow-lg">
+            <TabsTrigger
+              value="all"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              All Doctors
+            </TabsTrigger>
+            <TabsTrigger
+              value="recommended"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Recommended
+            </TabsTrigger>
+            <TabsTrigger
+              value="available"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              Available Today
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
-            {/* Desktop filters - hidden on mobile */}
-            <Card className="lg:col-span-1 hidden lg:block h-fit sticky top-4">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">Filters</CardTitle>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Mobile Filter Button */}
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full bg-white/80 backdrop-blur border-0 shadow-lg"
+                >
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Filters
                   {isFiltering && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={resetFilters}
-                      className="h-8 px-2 text-xs"
+                    <Badge
+                      variant="secondary"
+                      className="ml-2 bg-blue-100 text-blue-700"
                     >
-                      <XIcon className="h-3 w-3 mr-1" />
-                      Clear All
-                    </Button>
+                      Active
+                    </Badge>
                   )}
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 pt-0">
-                <div className="space-y-6">
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[80vh]">
+                <SheetHeader>
+                  <SheetTitle>Filter Doctors</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 space-y-6">
+                  {/* Mobile filter content - same as desktop */}
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="search">Search</Label>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                            >
-                              <HelpCircle className="h-3 w-3" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">
-                            <p>
-                              Search across doctor names, specialties, and
-                              hospitals
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <div className="relative">
-                      <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary/80" />
-                      <Input
-                        id="search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by name, specialty, or hospital..."
-                        className="pl-10 pr-9 focus-visible:ring-primary/50 border-primary/20 focus-visible:border-primary/50"
-                      />
-                      {searchQuery && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7"
-                          onClick={() => setSearchQuery("")}
-                        >
-                          <XIcon className="h-3 w-3" />
-                          <span className="sr-only">Clear search</span>
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="specialty">Specialty</Label>
-                      {filters.specialty !== "any" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            setFilters({ ...filters, specialty: "any" })
-                          }
-                          className="h-6 px-2 text-xs"
-                        >
-                          <XIcon className="h-3 w-3 mr-1" />
-                          Clear
-                        </Button>
-                      )}
-                    </div>
+                    <Label>Specialty</Label>
                     <Select
                       value={filters.specialty}
                       onValueChange={(value) =>
                         setFilters({ ...filters, specialty: value })
                       }
                     >
-                      <SelectTrigger id="specialty">
+                      <SelectTrigger>
                         <SelectValue placeholder="Select Specialty" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="any">Select Specialty</SelectItem>
-                        <SelectItem value="general">
-                          General Physician (AI-Powered)
+                        <SelectItem value="all">All Specialties</SelectItem>
+                        <SelectItem value="General Physician">
+                          General Physician
                         </SelectItem>
-                        <SelectItem value="cardiology">Cardiology</SelectItem>
-                        <SelectItem value="dermatology">Dermatology</SelectItem>
-                        <SelectItem value="neurology">Neurology</SelectItem>
-                        <SelectItem value="pediatrics">Pediatrics</SelectItem>
-                        <SelectItem value="orthopedics">Orthopedics</SelectItem>
+                        <SelectItem value="Cardiologist">
+                          Cardiologist
+                        </SelectItem>
+                        <SelectItem value="Neurologist">Neurologist</SelectItem>
+                        <SelectItem value="Orthopedic Surgeon">
+                          Orthopedic Surgeon
+                        </SelectItem>
+                        <SelectItem value="Pediatrician">
+                          Pediatrician
+                        </SelectItem>
+                        <SelectItem value="Gynecologist">
+                          Gynecologist
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="location">Location</Label>
-                      {filters.location !== "any" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            setFilters({ ...filters, location: "any" })
-                          }
-                          className="h-6 px-2 text-xs"
-                        >
-                          <XIcon className="h-3 w-3 mr-1" />
-                          Clear
-                        </Button>
-                      )}
-                    </div>
+                    <Label>Location</Label>
                     <Select
                       value={filters.location}
                       onValueChange={(value) =>
                         setFilters({ ...filters, location: value })
                       }
                     >
-                      <SelectTrigger id="location">
+                      <SelectTrigger>
                         <SelectValue placeholder="Select Location" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="any">Select Location</SelectItem>
-                        <SelectItem value="dhaka">Dhaka</SelectItem>
-                        <SelectItem value="chittagong">Chittagong</SelectItem>
-                        <SelectItem value="khulna">Khulna</SelectItem>
-                        <SelectItem value="rajshahi">Rajshahi</SelectItem>
-                        <SelectItem value="sylhet">Sylhet</SelectItem>
+                        <SelectItem value="all">All Locations</SelectItem>
+                        <SelectItem value="Dhaka">Dhaka</SelectItem>
+                        <SelectItem value="Chittagong">Chittagong</SelectItem>
+                        <SelectItem value="Khulna">Khulna</SelectItem>
+                        <SelectItem value="Rajshahi">Rajshahi</SelectItem>
+                        <SelectItem value="Sylhet">Sylhet</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="availability">Availability</Label>
-                      {filters.availability !== "any" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            setFilters({ ...filters, availability: "any" })
-                          }
-                          className="h-6 px-2 text-xs"
-                        >
-                          <XIcon className="h-3 w-3 mr-1" />
-                          Clear
-                        </Button>
-                      )}
-                    </div>
+                    <Label>Availability</Label>
                     <Select
                       value={filters.availability}
                       onValueChange={(value) =>
                         setFilters({ ...filters, availability: value })
                       }
                     >
-                      <SelectTrigger id="availability">
-                        <SelectValue placeholder="Select Availability Time" />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Availability" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="any">Any Time</SelectItem>
                         <SelectItem value="today">Today</SelectItem>
                         <SelectItem value="tomorrow">Tomorrow</SelectItem>
                         <SelectItem value="this-week">This Week</SelectItem>
-                        <SelectItem value="next-week">Next Week</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <Button className="w-full" onClick={applyFilters}>
-                    Apply Filters
-                  </Button>
+                  <div className="space-y-3">
+                    <Label>Minimum Rating</Label>
+                    <Select
+                      value={filters.rating}
+                      onValueChange={(value) =>
+                        setFilters({ ...filters, rating: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Rating" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="any">Any Rating</SelectItem>
+                        <SelectItem value="4.5">4.5+ Stars</SelectItem>
+                        <SelectItem value="4.0">4.0+ Stars</SelectItem>
+                        <SelectItem value="3.5">3.5+ Stars</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {isFiltering && (
+                    <Button
+                      variant="outline"
+                      onClick={resetFilters}
+                      className="w-full"
+                    >
+                      Clear All Filters
+                    </Button>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Desktop Filters Sidebar */}
+          <div className="lg:col-span-1 hidden lg:block">
+            <Card className="bg-white/80 backdrop-blur border-0 shadow-lg sticky top-4">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <SlidersHorizontal className="h-5 w-5" />
+                    Filters
+                  </CardTitle>
+                  {isFiltering && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={resetFilters}
+                      className="text-xs"
+                    >
+                      Clear All
+                    </Button>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Specialty Filter */}
+                <div className="space-y-3">
+                  <Label>Specialty</Label>
+                  <Select
+                    value={filters.specialty}
+                    onValueChange={(value) =>
+                      setFilters({ ...filters, specialty: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Specialty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Specialties</SelectItem>
+                      <SelectItem value="General Physician">
+                        General Physician
+                      </SelectItem>
+                      <SelectItem value="Cardiologist">Cardiologist</SelectItem>
+                      <SelectItem value="Neurologist">Neurologist</SelectItem>
+                      <SelectItem value="Orthopedic Surgeon">
+                        Orthopedic Surgeon
+                      </SelectItem>
+                      <SelectItem value="Pediatrician">Pediatrician</SelectItem>
+                      <SelectItem value="Gynecologist">Gynecologist</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Location Filter */}
+                <div className="space-y-3">
+                  <Label>Location</Label>
+                  <Select
+                    value={filters.location}
+                    onValueChange={(value) =>
+                      setFilters({ ...filters, location: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Locations</SelectItem>
+                      <SelectItem value="Dhaka">Dhaka</SelectItem>
+                      <SelectItem value="Chittagong">Chittagong</SelectItem>
+                      <SelectItem value="Khulna">Khulna</SelectItem>
+                      <SelectItem value="Rajshahi">Rajshahi</SelectItem>
+                      <SelectItem value="Sylhet">Sylhet</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Availability Filter */}
+                <div className="space-y-3">
+                  <Label>Availability</Label>
+                  <Select
+                    value={filters.availability}
+                    onValueChange={(value) =>
+                      setFilters({ ...filters, availability: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Availability" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any Time</SelectItem>
+                      <SelectItem value="today">Today</SelectItem>
+                      <SelectItem value="tomorrow">Tomorrow</SelectItem>
+                      <SelectItem value="this-week">This Week</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Rating Filter */}
+                <div className="space-y-3">
+                  <Label>Minimum Rating</Label>
+                  <Select
+                    value={filters.rating}
+                    onValueChange={(value) =>
+                      setFilters({ ...filters, rating: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Rating" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any Rating</SelectItem>
+                      <SelectItem value="4.5">4.5+ Stars</SelectItem>
+                      <SelectItem value="4.0">4.0+ Stars</SelectItem>
+                      <SelectItem value="3.5">3.5+ Stars</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
             </Card>
+          </div>
 
-            <div className="lg:col-span-3">
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-                <div className="w-full md:w-auto">
-                  <Tabs defaultValue="all" className="w-full">
-                    <div className="flex items-center justify-between">
-                      <TabsList className="w-full md:w-auto bg-[#1f2937]/80 p-1">
-                        <TabsTrigger
-                          value="all"
-                          className="flex-1 md:flex-initial text-[#9ca3af] data-[state=active]:text-white data-[state=active]:bg-[#3b82f6] rounded-md transition-all hover:text-white"
-                        >
-                          All Doctors
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="recommended"
-                          className="flex-1 md:flex-initial text-[#9ca3af] data-[state=active]:text-white data-[state=active]:bg-[#3b82f6] rounded-md transition-all hover:text-white"
-                        >
-                          Recommended
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="available-today"
-                          className="flex-1 md:flex-initial text-[#9ca3af] data-[state=active]:text-white data-[state=active]:bg-[#3b82f6] rounded-md transition-all hover:text-white"
-                        >
-                          Available Today
-                        </TabsTrigger>
-                      </TabsList>
-
-                      {isFiltering && (
-                        <div className="hidden md:flex items-center ml-4">
-                          <span className="text-sm text-muted-foreground mr-2">
-                            Filters applied
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={resetFilters}
-                            className="h-8 text-xs"
-                          >
-                            <XIcon className="h-3 w-3 mr-1" />
-                            Clear All
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-
-                    {isFiltering && (
-                      <div className="flex md:hidden items-center mt-4">
-                        <span className="text-sm text-muted-foreground mr-2">
-                          Filters applied
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={resetFilters}
-                          className="h-8 text-xs"
-                        >
-                          <XIcon className="h-3 w-3 mr-1" />
-                          Clear All
-                        </Button>
-                      </div>
-                    )}
-
-                    <TabsContent value="all" className="mt-4">
-                      <DoctorList
-                        searchQuery={searchQuery}
-                        specialty={activeFilters.specialty}
-                        location={activeFilters.location}
-                        availability={activeFilters.availability}
-                        onResetFilters={resetFilters}
-                      />
-                    </TabsContent>
-
-                    <TabsContent value="recommended" className="mt-4">
-                      <DoctorList
-                        recommended={true}
-                        searchQuery={searchQuery}
-                        specialty={activeFilters.specialty}
-                        location={activeFilters.location}
-                        availability={activeFilters.availability}
-                        onResetFilters={resetFilters}
-                      />
-                    </TabsContent>
-
-                    <TabsContent value="available-today" className="mt-4">
-                      <DoctorList
-                        availableToday={true}
-                        searchQuery={searchQuery}
-                        specialty={activeFilters.specialty}
-                        location={activeFilters.location}
-                        availability={activeFilters.availability}
-                        onResetFilters={resetFilters}
-                      />
-                    </TabsContent>
-                  </Tabs>
+          {/* Doctor List */}
+          <div className="lg:col-span-3">
+            {loading ? (
+              <Loading
+                variant="healthcare"
+                size="lg"
+                text="Finding the best doctors for you..."
+                className="py-16"
+              />
+            ) : error ? (
+              <div className="text-center py-16">
+                <div className="max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AlertCircle className="h-8 w-8 text-red-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Unable to Load Doctors
+                  </h3>
+                  <p className="text-gray-600 mb-6">{error}</p>
+                  <Button
+                    onClick={() => window.location.reload()}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Try Again
+                  </Button>
                 </div>
               </div>
-            </div>
-          </div>
-        </TabsContent>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    {filteredDoctors.length} Doctor
+                    {filteredDoctors.length !== 1 ? "s" : ""} Found
+                  </h2>
 
-        <TabsContent value="location">
-          <LocationBasedDoctorFinder
-            onDoctorSelect={(recommendation) => {
-              // Handle doctor selection - could navigate to booking page
-              console.log("Selected doctor:", recommendation);
-            }}
-          />
-        </TabsContent>
-      </Tabs>
+                  <div className="flex items-center gap-3">
+                    {/* Sort Dropdown */}
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium text-gray-700">
+                        Sort by:
+                      </Label>
+                      <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger className="w-40">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="rating">⭐ Rating</SelectItem>
+                          <SelectItem value="distance">📍 Distance</SelectItem>
+                          <SelectItem value="availability">
+                            🕐 Availability
+                          </SelectItem>
+                          <SelectItem value="name">📝 Name</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <Badge
+                      variant="outline"
+                      className="bg-blue-50 text-blue-700 border-blue-200"
+                    >
+                      {activeTab === "all"
+                        ? "All"
+                        : activeTab === "recommended"
+                        ? "Recommended"
+                        : "Available Today"}
+                    </Badge>
+                  </div>
+                </div>
+
+                <DoctorList doctors={filteredDoctors} />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

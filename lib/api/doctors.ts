@@ -17,14 +17,22 @@ export async function getDoctors(filters?: DoctorFilters): Promise<Doctor[]> {
 
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value.toString());
+        // Only add filter if it has a value and is not a default "all" or "any" value
+        if (value && value !== "all" && value !== "any") {
+          queryParams.append(key, value.toString());
+        }
       });
     }
 
+    const token = getToken();
+    const headers: Record<string, string> = {};
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch(`/api/doctors?${queryParams.toString()}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
+      headers,
     });
 
     if (!response.ok) {

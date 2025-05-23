@@ -37,7 +37,6 @@ export async function POST(request: Request) {
       data: result,
       status: response.status,
     });
-
   } catch (error: any) {
     console.error("Error calling Python backend:", error);
     return NextResponse.json(
@@ -49,14 +48,19 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
-    // Verify authentication
-    const authResult = await verifyAuth(request);
-    if (!authResult.isAuthenticated) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
     const url = new URL(request.url);
-    const endpoint = url.searchParams.get('endpoint') || '/health';
+    const endpoint = url.searchParams.get("endpoint") || "/health";
+
+    // Allow health checks without authentication
+    const isHealthCheck = endpoint === "/health" || endpoint.includes("health");
+
+    if (!isHealthCheck) {
+      // Verify authentication for non-health endpoints
+      const authResult = await verifyAuth(request);
+      if (!authResult.isAuthenticated) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+    }
 
     // Make request to Python backend
     const response = await fetch(`${PYTHON_BACKEND_URL}${endpoint}`, {
@@ -73,7 +77,6 @@ export async function GET(request: Request) {
       data: result,
       status: response.status,
     });
-
   } catch (error: any) {
     console.error("Error calling Python backend:", error);
     return NextResponse.json(

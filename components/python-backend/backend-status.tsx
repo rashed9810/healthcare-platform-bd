@@ -1,22 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  CheckCircle, 
-  XCircle, 
-  Loader2, 
-  Activity, 
-  Server, 
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  CheckCircle,
+  XCircle,
+  Loader2,
+  Activity,
+  Server,
   Zap,
   Brain,
   Database,
-  Clock
-} from 'lucide-react';
-import { pythonBackendService } from '@/lib/services/python-backend-service';
+  Clock,
+} from "lucide-react";
+import { pythonBackendService } from "@/lib/services/python-backend-service";
 
 interface BackendStatus {
   isOnline: boolean;
@@ -40,7 +40,7 @@ export default function BackendStatus() {
   const checkBackendStatus = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Check backend status
       const statusResult = await pythonBackendService.monitorBackendStatus();
@@ -54,7 +54,7 @@ export default function BackendStatus() {
         }
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to check backend status');
+      setError(err.message || "Failed to check backend status");
     } finally {
       setIsLoading(false);
     }
@@ -67,10 +67,10 @@ export default function BackendStatus() {
       if (isConnected) {
         await checkBackendStatus();
       } else {
-        setError('Connection test failed');
+        setError("Connection test failed");
       }
     } catch (err: any) {
-      setError(err.message || 'Connection test failed');
+      setError(err.message || "Connection test failed");
     } finally {
       setIsLoading(false);
     }
@@ -78,14 +78,14 @@ export default function BackendStatus() {
 
   useEffect(() => {
     checkBackendStatus();
-    
+
     // Auto-refresh every 30 seconds
     const interval = setInterval(checkBackendStatus, 30000);
     return () => clearInterval(interval);
   }, []);
 
   const getStatusColor = (isOnline: boolean) => {
-    return isOnline ? 'text-green-600' : 'text-red-600';
+    return isOnline ? "text-green-600" : "text-red-600";
   };
 
   const getStatusBadge = (isOnline: boolean) => {
@@ -120,26 +120,38 @@ export default function BackendStatus() {
             {/* Status Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex items-center space-x-2">
-                <Activity className={`h-4 w-4 ${status ? getStatusColor(status.isOnline) : 'text-gray-400'}`} />
+                <Activity
+                  className={`h-4 w-4 ${
+                    status ? getStatusColor(status.isOnline) : "text-gray-400"
+                  }`}
+                />
                 <span className="text-sm font-medium">Status:</span>
-                <span className={`text-sm ${status ? getStatusColor(status.isOnline) : 'text-gray-400'}`}>
-                  {status ? (status.isOnline ? 'Online' : 'Offline') : 'Unknown'}
+                <span
+                  className={`text-sm ${
+                    status ? getStatusColor(status.isOnline) : "text-gray-400"
+                  }`}
+                >
+                  {status
+                    ? status.isOnline
+                      ? "Online"
+                      : "Offline"
+                    : "Unknown"}
                 </span>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Clock className="h-4 w-4 text-blue-600" />
                 <span className="text-sm font-medium">Response Time:</span>
                 <span className="text-sm text-blue-600">
-                  {status ? `${status.responseTime}ms` : 'N/A'}
+                  {status ? `${status.responseTime}ms` : "N/A"}
                 </span>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Database className="h-4 w-4 text-purple-600" />
                 <span className="text-sm font-medium">Version:</span>
                 <span className="text-sm text-purple-600">
-                  {healthData ? healthData.version : 'N/A'}
+                  {healthData ? healthData.version : "N/A"}
                 </span>
               </div>
             </div>
@@ -150,10 +162,12 @@ export default function BackendStatus() {
                 <h4 className="font-medium mb-2">Backend Information</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                   <div>
-                    <span className="font-medium">Service:</span> {healthData.service}
+                    <span className="font-medium">Service:</span>{" "}
+                    {healthData.service}
                   </div>
                   <div>
-                    <span className="font-medium">Last Updated:</span> {new Date(healthData.timestamp).toLocaleString()}
+                    <span className="font-medium">Last Updated:</span>{" "}
+                    {new Date(healthData.timestamp).toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -164,15 +178,31 @@ export default function BackendStatus() {
               <Alert className="border-red-200 bg-red-50">
                 <XCircle className="h-4 w-4 text-red-600" />
                 <AlertDescription className="text-red-800">
-                  {error}
+                  <div className="space-y-2">
+                    <p>{error}</p>
+                    {error.includes("401") || error.includes("Unauthorized") ? (
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm">
+                          Please log in to access Python backend features.
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => (window.location.href = "/login")}
+                        >
+                          Login
+                        </Button>
+                      </div>
+                    ) : null}
+                  </div>
                 </AlertDescription>
               </Alert>
             )}
 
             {/* Action Buttons */}
             <div className="flex space-x-2">
-              <Button 
-                onClick={checkBackendStatus} 
+              <Button
+                onClick={checkBackendStatus}
                 disabled={isLoading}
                 variant="outline"
                 size="sm"
@@ -184,9 +214,9 @@ export default function BackendStatus() {
                 )}
                 Refresh Status
               </Button>
-              
-              <Button 
-                onClick={testConnection} 
+
+              <Button
+                onClick={testConnection}
                 disabled={isLoading}
                 variant="outline"
                 size="sm"
@@ -222,7 +252,7 @@ export default function BackendStatus() {
                 <li>• Medical Image Analysis</li>
               </ul>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium">Integration</h4>
               <ul className="text-sm space-y-1 text-gray-600">
@@ -244,28 +274,32 @@ export default function BackendStatus() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="h-auto p-4 flex flex-col items-center space-y-2"
-                onClick={() => window.open('http://localhost:8001/docs', '_blank')}
+                onClick={() =>
+                  window.open("http://localhost:8001/docs", "_blank")
+                }
               >
                 <Server className="h-6 w-6" />
                 <span>API Docs</span>
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 className="h-auto p-4 flex flex-col items-center space-y-2"
-                onClick={() => window.open('http://localhost:8001/health', '_blank')}
+                onClick={() =>
+                  window.open("http://localhost:8001/health", "_blank")
+                }
               >
                 <Activity className="h-6 w-6" />
                 <span>Health Check</span>
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 className="h-auto p-4 flex flex-col items-center space-y-2"
-                onClick={() => window.open('http://localhost:8001', '_blank')}
+                onClick={() => window.open("http://localhost:8001", "_blank")}
               >
                 <Brain className="h-6 w-6" />
                 <span>Backend Home</span>

@@ -11,6 +11,7 @@ import {
   MapPin,
   Star,
   Video,
+  User,
 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -152,6 +153,7 @@ const mockDoctors = [
 ];
 
 interface DoctorListProps {
+  doctors: any[];
   recommended?: boolean;
   availableToday?: boolean;
   searchQuery?: string;
@@ -171,6 +173,7 @@ function getInitials(name: string) {
 }
 
 export default function DoctorList({
+  doctors: propDoctors = [],
   recommended,
   availableToday,
   searchQuery = "",
@@ -185,7 +188,9 @@ export default function DoctorList({
       onResetFilters();
     }
   };
-  const [doctors] = useState(mockDoctors);
+  const [doctors] = useState(
+    propDoctors.length > 0 ? propDoctors : mockDoctors
+  );
   const [expandedDoctorId, setExpandedDoctorId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -281,31 +286,7 @@ export default function DoctorList({
     setExpandedDoctorId(expandedDoctorId === id ? null : id);
   };
 
-  const fetchDoctorData = async (doctorId: number) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch(`/api/doctors/${doctorId}`);
-      if (!response.ok) {
-        if (response.status === 404) {
-          setError("Doctor not found.");
-        } else {
-          setError("An error occurred while fetching doctor data.");
-        }
-        return;
-      }
-      const data = await response.json();
-      console.log(data); // Handle the fetched data as needed
-    } catch (err) {
-      setError("Failed to fetch doctor data.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDoctorData(1); // Example doctor ID for testing
-  }, []);
+  // Remove the problematic API call that was causing errors
 
   if (error) {
     return <div className="error-message">{error}</div>;
@@ -425,19 +406,36 @@ export default function DoctorList({
                                     <h4 className="font-semibold">
                                       Patient Reviews
                                     </h4>
-                                    {doctor.reviews.map((review, index) => (
-                                      <div
-                                        key={index}
-                                        className="border-l-2 border-primary/30 pl-3 py-1"
-                                      >
-                                        <p className="text-sm italic">
-                                          "{review.text}"
+                                    {doctor.reviews &&
+                                    doctor.reviews.length > 0 ? (
+                                      doctor.reviews.map((review, index) => (
+                                        <div
+                                          key={index}
+                                          className="border-l-2 border-primary/30 pl-3 py-1"
+                                        >
+                                          <p className="text-sm italic">
+                                            "{review.text}"
+                                          </p>
+                                          <p className="text-xs text-muted-foreground mt-1">
+                                            — {review.author}
+                                          </p>
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div className="text-sm text-muted-foreground">
+                                        <p>
+                                          ⭐ {doctor.rating}/5 rating from{" "}
+                                          {doctor.reviewCount} patients
                                         </p>
-                                        <p className="text-xs text-muted-foreground mt-1">
-                                          — {review.author}
+                                        <p className="mt-1 italic">
+                                          "Excellent care and professional
+                                          service"
+                                        </p>
+                                        <p className="text-xs mt-1">
+                                          — Recent Patient
                                         </p>
                                       </div>
-                                    ))}
+                                    )}
                                   </div>
                                 </TooltipContent>
                               </Tooltip>
@@ -445,11 +443,23 @@ export default function DoctorList({
                           </div>
 
                           <div className="mt-3 md:mt-4 space-y-2 md:space-y-3">
-                            <div className="flex items-center text-xs md:text-sm bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-md">
-                              <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 mr-2 text-slate-500 dark:text-slate-400 flex-shrink-0" />
-                              <span className="text-slate-700 dark:text-slate-300">
-                                {doctor.location}
-                              </span>
+                            <div className="flex items-start text-xs md:text-sm bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-md">
+                              <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 mr-2 text-slate-500 dark:text-slate-400 flex-shrink-0 mt-0.5" />
+                              <div className="flex flex-col">
+                                <span className="text-slate-700 dark:text-slate-300 font-medium">
+                                  {doctor.location}
+                                </span>
+                                {doctor.address && (
+                                  <span className="text-slate-500 dark:text-slate-400 text-xs">
+                                    {doctor.address}
+                                  </span>
+                                )}
+                                {doctor.distance && (
+                                  <span className="text-blue-600 dark:text-blue-400 text-xs font-medium">
+                                    📍 {doctor.distance} away
+                                  </span>
+                                )}
+                              </div>
                             </div>
                             <div className="flex items-center text-xs md:text-sm">
                               <Clock className="h-3.5 w-3.5 md:h-4 md:w-4 mr-2 text-slate-500 dark:text-slate-400 flex-shrink-0" />
@@ -460,10 +470,12 @@ export default function DoctorList({
                                     : "text-slate-700 dark:text-slate-300"
                                 }
                               >
-                                {doctor.availableToday ? "Available Now: " : ""}
-                                {doctor.nextAvailable
-                                  .replace("Available Now: ", "")
-                                  .replace(", ", " • ")}
+                                {doctor.availableToday
+                                  ? `Next Available: ${doctor.nextAvailable.replace(
+                                      "Today, ",
+                                      "Today at "
+                                    )}`
+                                  : `Next Available: ${doctor.nextAvailable}`}
                               </span>
                               {doctor.availableToday && (
                                 <Badge
@@ -477,15 +489,26 @@ export default function DoctorList({
                           </div>
 
                           <div className="mt-2 md:mt-3 flex flex-wrap gap-1 md:gap-2">
-                            {doctor.languages.map((language) => (
-                              <Badge
-                                key={language}
-                                variant="outline"
-                                className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700/30 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors text-[10px] md:text-xs px-2 py-0.5"
-                              >
-                                {language}
-                              </Badge>
-                            ))}
+                            {doctor.languages.map((language) => {
+                              const languageFlag =
+                                language === "Bengali"
+                                  ? "🇧🇩"
+                                  : language === "English"
+                                  ? "🇺🇸"
+                                  : language === "Hindi"
+                                  ? "🇮🇳"
+                                  : "🌐";
+                              return (
+                                <Badge
+                                  key={language}
+                                  variant="outline"
+                                  className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700/30 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors text-[10px] md:text-xs px-2 py-0.5 flex items-center gap-1"
+                                >
+                                  <span>{languageFlag}</span>
+                                  <span>{language}</span>
+                                </Badge>
+                              );
+                            })}
                             {doctor.recommended && (
                               <Badge
                                 variant="secondary"
@@ -514,49 +537,108 @@ export default function DoctorList({
                       </div>
                     </div>
 
-                    {/* Action buttons section */}
-                    <div className="md:col-span-1 bg-gradient-to-b from-blue-50 to-slate-50 dark:from-slate-900/40 dark:to-slate-800/20 p-5 md:p-6 flex flex-col justify-center items-center gap-4 rounded-r-lg">
-                      {/* Primary Button - Book Appointment */}
-                      <Button asChild size="lg" className="w-full">
-                        <Link
-                          href={`/book-appointment/${doctor.id}`}
-                          className="flex items-center justify-center w-full gap-2"
-                        >
-                          <Calendar className="h-5 w-5" />
-                          <span>Book Appointment</span>
-                        </Link>
-                      </Button>
+                    {/* Action buttons section - Compact Icon Design */}
+                    <div className="md:col-span-1 bg-gradient-to-b from-blue-50 to-slate-50 dark:from-slate-900/40 dark:to-slate-800/20 p-4 md:p-5 flex flex-col justify-center items-center gap-3 rounded-r-lg">
+                      {/* Primary Button - Book Appointment (Icon Only) */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              asChild
+                              size="lg"
+                              className="w-full h-12 rounded-xl"
+                            >
+                              <Link
+                                href={`/book-appointment/${doctor.id}`}
+                                className="flex items-center justify-center w-full"
+                              >
+                                <Calendar className="h-6 w-6" />
+                              </Link>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="left"
+                            className="bg-blue-600 text-white"
+                          >
+                            <p className="font-medium">📅 Book Appointment</p>
+                            <p className="text-xs opacity-90">
+                              Schedule in-person visit
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
 
-                      {/* Outlined Button - Video Consultation */}
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="lg"
-                        className="w-full"
-                      >
-                        <Link
-                          href={`/book-appointment/${doctor.id}?type=video`}
-                          className="flex items-center justify-center w-full gap-2"
-                        >
-                          <Video className="h-5 w-5" />
-                          <span>Video Consultation</span>
-                        </Link>
-                      </Button>
+                      {/* Video Consultation Button (Icon Only) */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              asChild
+                              variant="outline"
+                              size="lg"
+                              className="w-full h-12 rounded-xl border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50"
+                            >
+                              <Link
+                                href={`/book-appointment/${doctor.id}?type=video`}
+                                className="flex items-center justify-center w-full"
+                              >
+                                <Video className="h-6 w-6 text-blue-600" />
+                              </Link>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="left"
+                            className="bg-blue-600 text-white"
+                          >
+                            <p className="font-medium">📹 Video Consultation</p>
+                            <p className="text-xs opacity-90">
+                              Online video call
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
 
-                      {/* Secondary Button - View Full Profile */}
-                      <Button
-                        asChild
-                        variant="secondary"
-                        size="lg"
-                        className="w-full"
-                      >
-                        <Link
-                          href={`/doctor/${doctor.id}`}
-                          className="flex items-center justify-center w-full"
-                        >
-                          <span>View Full Profile</span>
-                        </Link>
-                      </Button>
+                      {/* View Profile Button (Icon Only) */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              asChild
+                              variant="secondary"
+                              size="lg"
+                              className="w-full h-12 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200"
+                            >
+                              <Link
+                                href={`/doctor/${doctor.id}`}
+                                className="flex items-center justify-center w-full"
+                              >
+                                <User className="h-6 w-6 text-slate-600" />
+                              </Link>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="left"
+                            className="bg-slate-700 text-white"
+                          >
+                            <p className="font-medium">👨‍⚕️ View Full Profile</p>
+                            <div className="text-xs opacity-90 mt-1 space-y-0.5">
+                              <p>📋 Education & Certifications</p>
+                              <p>💬 Patient Reviews & Ratings</p>
+                              <p>🏥 Hospital Details & Services</p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                      {/* Consultation Fee Display */}
+                      <div className="text-center mt-2">
+                        <p className="text-xs text-slate-500 font-medium">
+                          Consultation Fee
+                        </p>
+                        <p className="text-lg font-bold text-blue-600">
+                          ৳{doctor.consultationFee || 800}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -564,90 +646,92 @@ export default function DoctorList({
             ))}
           </div>
 
-          {/* Bottom pagination controls */}
+          {/* Enhanced Bottom pagination controls */}
           {totalPages > 1 && (
             <div className="flex justify-center mt-6 md:mt-8">
-              <div className="flex flex-wrap justify-center items-center gap-2 md:space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => paginate(1)}
-                  disabled={currentPage === 1}
-                  className="hidden md:inline-flex h-8 px-2"
-                >
-                  First
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => paginate(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="h-8 w-8 p-0"
-                >
-                  &lt;
-                </Button>
+              <div className="bg-white/80 backdrop-blur border border-blue-100 rounded-lg p-3 shadow-lg">
+                <div className="flex flex-wrap justify-center items-center gap-2 md:space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => paginate(1)}
+                    disabled={currentPage === 1}
+                    className="hidden md:inline-flex h-8 px-3 bg-white hover:bg-blue-50 border-blue-200"
+                  >
+                    ⏮️ First
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => paginate(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="h-8 w-8 p-0 bg-white hover:bg-blue-50 border-blue-200"
+                  >
+                    ◀️
+                  </Button>
 
-                {/* Page numbers */}
-                <div className="hidden md:flex items-center space-x-1">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
+                  {/* Page numbers */}
+                  <div className="hidden md:flex items-center space-x-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+
+                      return (
+                        <Button
+                          key={i}
+                          variant={
+                            currentPage === pageNum ? "default" : "outline"
+                          }
+                          size="sm"
+                          onClick={() => paginate(pageNum)}
+                          className={`h-8 w-8 p-0 ${
+                            currentPage === pageNum
+                              ? "bg-[#3b82f6] text-white"
+                              : ""
+                          }`}
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Enhanced Mobile page indicator */}
+                  <div className="flex md:hidden items-center px-3 py-1 bg-blue-50 border border-blue-200 rounded-md">
+                    <span className="text-sm font-medium text-blue-700">
+                      📄 Page {currentPage} of {totalPages}
+                    </span>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      paginate(Math.min(totalPages, currentPage + 1))
                     }
-
-                    return (
-                      <Button
-                        key={i}
-                        variant={
-                          currentPage === pageNum ? "default" : "outline"
-                        }
-                        size="sm"
-                        onClick={() => paginate(pageNum)}
-                        className={`h-8 w-8 p-0 ${
-                          currentPage === pageNum
-                            ? "bg-[#3b82f6] text-white"
-                            : ""
-                        }`}
-                      >
-                        {pageNum}
-                      </Button>
-                    );
-                  })}
+                    disabled={currentPage === totalPages}
+                    className="h-8 w-8 p-0 bg-white hover:bg-blue-50 border-blue-200"
+                  >
+                    ▶️
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => paginate(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="hidden md:inline-flex h-8 px-3 bg-white hover:bg-blue-50 border-blue-200"
+                  >
+                    Last ⏭️
+                  </Button>
                 </div>
-
-                {/* Mobile page indicator */}
-                <div className="flex md:hidden items-center px-2 py-1 bg-muted/30 rounded-md">
-                  <span className="text-sm font-medium">
-                    {currentPage} / {totalPages}
-                  </span>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    paginate(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="h-8 w-8 p-0"
-                >
-                  &gt;
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => paginate(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className="hidden md:inline-flex h-8 px-2"
-                >
-                  Last
-                </Button>
               </div>
             </div>
           )}
