@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +9,10 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import PaymentReceipt from "@/components/payment/payment-receipt";
 import type { PaymentDetails, Appointment, Doctor } from "@/lib/api/types";
 import { formatDate } from "@/lib/utils/date";
+import {
+  WithSearchParams,
+  useSearchParams,
+} from "@/components/providers/search-params-provider";
 
 // Mock payment data (in a real app, this would come from an API)
 const mockPayment: PaymentDetails = {
@@ -66,79 +70,59 @@ const mockDoctor: Doctor = {
   bio: "Experienced cardiologist with 8 years of practice.",
 };
 
-export default function PaymentDetailsPage() {
+// Content component that uses search params
+function PaymentDetailsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [payment, setPayment] = useState<PaymentDetails | null>(null);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [activeTab, setActiveTab] = useState("receipt");
 
-  // Wrap useSearchParams in a client component
-  const SearchParamsWrapper = () => {
-    const searchParams = useSearchParams();
-
-    useEffect(() => {
-      const fetchPaymentDetails = async () => {
-        try {
-          const paymentId = searchParams.get("id");
-
-          if (!paymentId) {
-            router.push("/payments/history");
-            return;
-          }
-
-          // Fetch payment details from API
-          const response = await fetch(`/api/payments/${paymentId}`);
-
-          if (!response.ok) {
-            throw new Error("Failed to fetch payment details");
-          }
-
-          const data = await response.json();
-
-          if (data.payment) {
-            setPayment(data.payment);
-          }
-
-          if (data.appointment) {
-            setAppointment(data.appointment);
-          }
-
-          if (data.doctor) {
-            setDoctor(data.doctor);
-          }
-        } catch (error) {
-          console.error("Error fetching payment details:", error);
-          // Fallback to mock data if API fails
-          setPayment(mockPayment);
-          setAppointment(mockAppointment);
-          setDoctor(mockDoctor);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchPaymentDetails();
-    }, [searchParams]);
-
-    return null;
-  };
-
-  // Use effect to load mock data if no search params are available
   useEffect(() => {
-    // Set mock data after a short delay to simulate loading
-    const timer = setTimeout(() => {
-      if (isLoading) {
+    const fetchPaymentDetails = async () => {
+      try {
+        const paymentId = searchParams.get("id");
+
+        if (!paymentId) {
+          router.push("/payments/history");
+          return;
+        }
+
+        // Fetch payment details from API
+        const response = await fetch(`/api/payments/${paymentId}`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch payment details");
+        }
+
+        const data = await response.json();
+
+        if (data.payment) {
+          setPayment(data.payment);
+        }
+
+        if (data.appointment) {
+          setAppointment(data.appointment);
+        }
+
+        if (data.doctor) {
+          setDoctor(data.doctor);
+        }
+      } catch (error) {
+        console.error("Error fetching payment details:", error);
+        // Fallback to mock data if API fails
         setPayment(mockPayment);
         setAppointment(mockAppointment);
         setDoctor(mockDoctor);
+      } finally {
         setIsLoading(false);
       }
-    }, 1000);
+    };
 
-    return () => clearTimeout(timer);
-  }, [isLoading]);
+    fetchPaymentDetails();
+  }, [searchParams, router]);
 
   // Format appointment date and time
   const formattedAppointmentDate = appointment
@@ -149,11 +133,6 @@ export default function PaymentDetailsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Suspense boundary for useSearchParams */}
-      <React.Suspense fallback={null}>
-        <SearchParamsWrapper />
-      </React.Suspense>
-
       <div className="flex items-center mb-6">
         <Button
           variant="outline"
@@ -339,5 +318,14 @@ export default function PaymentDetailsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Main component that wraps the content with search params provider
+export default function PaymentDetailsPage() {
+  return (
+    <WithSearchParams>
+      <PaymentDetailsContent />
+    </WithSearchParams>
   );
 }

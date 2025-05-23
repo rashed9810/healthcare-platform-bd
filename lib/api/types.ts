@@ -29,6 +29,7 @@ export interface Doctor extends User {
   consultationFee: number;
   bio: string;
   image?: string; // Optional field to include doctor profile images
+  availableForVideo?: boolean; // Whether the doctor offers video consultations
 }
 
 export interface MedicalRecord {
@@ -125,6 +126,15 @@ export interface PaymentResponse {
   redirectUrl?: string;
   message?: string;
   status?: PaymentStatus;
+}
+
+export interface Symptom {
+  id: string;
+  name: string;
+  description: string;
+  bodyPart?: string;
+  severity?: string;
+  duration?: string;
 }
 
 export interface SymptomData {
