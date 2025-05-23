@@ -118,31 +118,31 @@ export const PAYMENT_METHODS = [
   {
     value: "bkash",
     label: "bKash",
-    icon: "/images/payment/bkash.png",
+    icon: "/images/payment/bkash.svg",
     description: "Pay with your bKash account",
   },
   {
     value: "nagad",
     label: "Nagad",
-    icon: "/images/payment/nagad.png",
+    icon: "/images/payment/nagad.svg",
     description: "Pay with your Nagad account",
   },
   {
     value: "rocket",
     label: "Rocket",
-    icon: "/images/payment/rocket.png",
+    icon: "/images/payment/rocket.svg",
     description: "Pay with your Rocket account",
   },
   {
     value: "card",
     label: "Credit/Debit Card",
-    icon: "/images/payment/card.png",
+    icon: "/images/payment/card.svg",
     description: "Pay with Visa, Mastercard, or American Express",
   },
   {
     value: "cash",
     label: "Cash on Visit",
-    icon: "/images/payment/cash.png",
+    icon: "/images/payment/cash.svg",
     description: "Pay at the clinic during your visit (in-person only)",
   },
 ];

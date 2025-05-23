@@ -35,26 +35,44 @@ export default function PaymentMethodSelector({
         onValueChange={(value) => onMethodChange(value as PaymentMethod)}
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
       >
-        {Object.entries(PAYMENT_METHODS).map(
-          ([key, { value, label, icon }]) => (
-            <Label
-              key={key}
-              className={cn(
-                "flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition hover:shadow-md",
-                selectedMethod === value
-                  ? "border-primary bg-primary/10"
-                  : "border-gray-300"
-              )}
-            >
-              {icon && <Image src={icon} alt={label} width={32} height={32} />}
-              <div className="flex flex-col">
-                <span className="font-medium text-gray-800">{label}</span>
-                <span className="text-sm text-gray-500">{key}</span>
+        {PAYMENT_METHODS.filter(
+          (method) =>
+            // Only show cash option for in-person appointments
+            method.value !== "cash" || appointmentType === "in-person"
+        ).map((method) => (
+          <Label
+            key={method.value}
+            className={cn(
+              "flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition hover:shadow-md",
+              selectedMethod === method.value
+                ? "border-primary bg-primary/10"
+                : "border-gray-300"
+            )}
+          >
+            {method.icon && (
+              <div className="relative w-8 h-8">
+                <Image
+                  src={method.icon}
+                  alt={method.label}
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
               </div>
-              <RadioGroupItem value={value} id={key} className="ml-auto" />
-            </Label>
-          )
-        )}
+            )}
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-800">{method.label}</span>
+              <span className="text-sm text-gray-500">
+                {method.description}
+              </span>
+            </div>
+            <RadioGroupItem
+              value={method.value}
+              id={method.value}
+              className="ml-auto"
+            />
+          </Label>
+        ))}
       </RadioGroup>
     </div>
   );

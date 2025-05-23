@@ -15,6 +15,7 @@ import { Loader2, AlertCircle, ArrowLeft, ExternalLink } from "lucide-react";
 import { initiatePayment, getPaymentStatus } from "@/lib/api/payments";
 import type { PaymentMethod, PaymentStatus } from "@/lib/api/types";
 import PaymentStatusBadge from "./payment-status-badge";
+import PaymentProcessingLoader from "./payment-processing-loader";
 
 interface PaymentProcessorProps {
   appointmentId: string;
@@ -83,10 +84,13 @@ export default function PaymentProcessor({
           }
         } else {
           setError(response.message || "Failed to initiate payment");
+          setStatus("failed");
+          setProgress(0);
         }
       } catch (err: any) {
         setError(err.message || "An error occurred while processing payment");
         setStatus("failed");
+        setProgress(0);
       } finally {
         setIsProcessing(false);
       }
@@ -98,12 +102,18 @@ export default function PaymentProcessor({
     return () => {
       if (pollingInterval) {
         clearInterval(pollingInterval);
+        setPollingInterval(null);
       }
     };
-  }, [appointmentId, amount, method, onSuccess]);
+  }, [appointmentId, amount, method, onSuccess, pollingInterval]);
 
   // Start polling for payment status
   const startPolling = (paymentId: string) => {
+    // Clear any existing interval first
+    if (pollingInterval) {
+      clearInterval(pollingInterval);
+    }
+
     // Poll every 5 seconds
     const interval = setInterval(async () => {
       try {
@@ -116,21 +126,27 @@ export default function PaymentProcessor({
           paymentDetails.status === "failed" ||
           paymentDetails.status === "cancelled"
         ) {
-          if (pollingInterval) {
-            clearInterval(pollingInterval);
-            setPollingInterval(null);
-          }
+          clearInterval(interval);
+          setPollingInterval(null);
 
           if (paymentDetails.status === "completed") {
             setProgress(100);
             onSuccess(paymentId);
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error polling payment status:", err);
+        // If we've had multiple failures, stop polling and show error
+        if (err.message) {
+          setError(`Payment verification error: ${err.message}`);
+          setStatus("failed");
+          clearInterval(interval);
+          setPollingInterval(null);
+        }
       }
     }, 5000);
 
+    // Store the interval ID in state
     setPollingInterval(interval);
   };
 
@@ -144,17 +160,7 @@ export default function PaymentProcessor({
       </CardHeader>
       <CardContent className="space-y-4">
         {isProcessing ? (
-          <>
-            <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="absolute top-0 left-0 h-full bg-primary transition-all"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-            <p className="mt-4 text-muted-foreground">
-              Processing your payment...
-            </p>
-          </>
+          <PaymentProcessingLoader method={method} fullScreen={false} />
         ) : error ? (
           <Alert className="mt-4" variant="destructive">
             <AlertCircle className="h-5 w-5 text-red-500" />
@@ -164,8 +170,38 @@ export default function PaymentProcessor({
               Retry
             </Button>
           </Alert>
+        ) : status === "pending" ? (
+          <>
+            <div className="flex flex-col items-center justify-center py-4">
+              <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+              <p className="text-center text-muted-foreground">
+                Waiting for payment confirmation...
+              </p>
+              {redirectUrl && (
+                <p className="text-center text-sm mt-4">
+                  If the payment window didn't open, please{" "}
+                  <Button
+                    variant="link"
+                    className="p-0 h-auto"
+                    onClick={() => window.open(redirectUrl, "_blank")}
+                  >
+                    click here
+                  </Button>
+                </p>
+              )}
+            </div>
+          </>
         ) : (
-          <PaymentStatusBadge status={status || "pending"} />
+          <div className="flex flex-col items-center justify-center">
+            <PaymentStatusBadge status={status || "pending"} className="mb-2" />
+            <p className="text-center text-muted-foreground">
+              {status === "completed"
+                ? "Payment completed successfully!"
+                : status === "failed"
+                ? "Payment failed. Please try again."
+                : "Processing payment..."}
+            </p>
+          </div>
         )}
       </CardContent>
       <CardFooter className="flex justify-between">

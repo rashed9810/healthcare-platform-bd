@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyAuth } from "@/lib/auth-middleware";
 import { connectToDatabase } from "@/lib/db";
 import { ObjectId } from "mongodb";
+import { verifyPaymentWithGateway } from "@/lib/api/payment-gateways";
 
 export async function POST(request: Request) {
   try {
@@ -39,14 +40,25 @@ export async function POST(request: Request) {
       );
     }
 
-    // In a real app, you would verify the transaction with the payment gateway
-    // For this demo, we'll simulate a successful verification
-    const isVerified = true;
+    // Verify the payment with the payment gateway
+    try {
+      const isVerified = await verifyPaymentWithGateway(
+        payment.method,
+        paymentId,
+        transactionId
+      );
 
-    if (!isVerified) {
+      if (!isVerified) {
+        return NextResponse.json(
+          { message: "Transaction verification failed" },
+          { status: 400 }
+        );
+      }
+    } catch (error: any) {
+      console.error("Error verifying payment with gateway:", error);
       return NextResponse.json(
-        { message: "Transaction verification failed" },
-        { status: 400 }
+        { message: error.message || "Transaction verification failed" },
+        { status: 500 }
       );
     }
 

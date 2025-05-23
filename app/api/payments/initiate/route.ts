@@ -2,35 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyAuth } from "@/lib/auth-middleware";
 import { connectToDatabase } from "@/lib/db";
 import { ObjectId } from "mongodb";
-import crypto from "crypto";
-
-// Mock gateway configurations
-const PAYMENT_GATEWAYS = {
-  bkash: {
-    apiUrl: "https://checkout.sandbox.bka.sh/v1.2.0-beta/checkout/payment/create",
-    username: process.env.BKASH_USERNAME || "sandbox_username",
-    password: process.env.BKASH_PASSWORD || "sandbox_password",
-    appKey: process.env.BKASH_APP_KEY || "sandbox_app_key",
-    appSecret: process.env.BKASH_APP_SECRET || "sandbox_app_secret",
-  },
-  nagad: {
-    apiUrl: "https://sandbox.nagad.com.bd/api/dfs/check-out/initialize",
-    merchantId: process.env.NAGAD_MERCHANT_ID || "sandbox_merchant_id",
-    merchantNumber: process.env.NAGAD_MERCHANT_NUMBER || "01XXXXXXXXX",
-    publicKey: process.env.NAGAD_PUBLIC_KEY || "sandbox_public_key",
-    privateKey: process.env.NAGAD_PRIVATE_KEY || "sandbox_private_key",
-  },
-  rocket: {
-    apiUrl: "https://sandbox.rocket.com.bd/api/payment/initiate",
-    merchantId: process.env.ROCKET_MERCHANT_ID || "sandbox_merchant_id",
-    apiKey: process.env.ROCKET_API_KEY || "sandbox_api_key",
-  },
-  card: {
-    apiUrl: "https://sandbox.sslcommerz.com/gwprocess/v4/api.php",
-    storeId: process.env.SSL_STORE_ID || "sandbox_store_id",
-    storePassword: process.env.SSL_STORE_PASSWORD || "sandbox_store_password",
-  },
-};
+import { generatePaymentUrl } from "@/lib/api/payment-gateways";
 
 export async function POST(request: Request) {
   try {
@@ -114,26 +86,27 @@ export async function POST(request: Request) {
     let redirectUrl;
     const paymentReference = paymentId.toString();
 
-    // Mock payment gateway integration
-    // In a real app, you would integrate with the actual payment gateway APIs
-    switch (method) {
-      case "bkash":
-        redirectUrl = mockBkashPaymentUrl(paymentReference, amount, returnUrl);
-        break;
-      case "nagad":
-        redirectUrl = mockNagadPaymentUrl(paymentReference, amount, returnUrl);
-        break;
-      case "rocket":
-        redirectUrl = mockRocketPaymentUrl(paymentReference, amount, returnUrl);
-        break;
-      case "card":
-        redirectUrl = mockCardPaymentUrl(paymentReference, amount, returnUrl);
-        break;
-      default:
+    try {
+      // Generate payment URL using the payment gateway utilities
+      redirectUrl = await generatePaymentUrl(
+        method,
+        paymentReference,
+        amount,
+        returnUrl
+      );
+
+      if (!redirectUrl && method !== "cash") {
         return NextResponse.json(
-          { message: "Unsupported payment method" },
-          { status: 400 }
+          { message: "Failed to generate payment URL" },
+          { status: 500 }
         );
+      }
+    } catch (error: any) {
+      console.error("Error generating payment URL:", error);
+      return NextResponse.json(
+        { message: error.message || "Failed to generate payment URL" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
@@ -149,55 +122,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-// Mock payment gateway URL generators
-// In a real app, these would make actual API calls to the payment gateways
-
-function mockBkashPaymentUrl(
-  paymentReference: string,
-  amount: number,
-  returnUrl: string
-) {
-  // In a real implementation, you would make an API call to bKash
-  // and get the actual payment URL
-  return `https://sandbox.bka.sh/checkout?amount=${amount}&reference=${paymentReference}&redirect=${encodeURIComponent(
-    returnUrl
-  )}`;
-}
-
-function mockNagadPaymentUrl(
-  paymentReference: string,
-  amount: number,
-  returnUrl: string
-) {
-  // In a real implementation, you would make an API call to Nagad
-  // and get the actual payment URL
-  return `https://sandbox.nagad.com.bd/checkout?amount=${amount}&reference=${paymentReference}&redirect=${encodeURIComponent(
-    returnUrl
-  )}`;
-}
-
-function mockRocketPaymentUrl(
-  paymentReference: string,
-  amount: number,
-  returnUrl: string
-) {
-  // In a real implementation, you would make an API call to Rocket
-  // and get the actual payment URL
-  return `https://sandbox.rocket.com.bd/checkout?amount=${amount}&reference=${paymentReference}&redirect=${encodeURIComponent(
-    returnUrl
-  )}`;
-}
-
-function mockCardPaymentUrl(
-  paymentReference: string,
-  amount: number,
-  returnUrl: string
-) {
-  // In a real implementation, you would make an API call to SSL Commerz
-  // and get the actual payment URL
-  return `https://sandbox.sslcommerz.com/checkout?amount=${amount}&reference=${paymentReference}&redirect=${encodeURIComponent(
-    returnUrl
-  )}`;
 }
