@@ -51,6 +51,20 @@ export default function LoginPage() {
     try {
       console.log("Sending login request...");
 
+      // Check if the email is one of the test accounts
+      const testEmails = [
+        "test@example.com",
+        "doctor@example.com",
+        "patient@example.com",
+      ];
+      if (!testEmails.includes(values.email)) {
+        setError(
+          `Invalid email. Please use one of the test accounts shown above.`
+        );
+        setIsLoading(false);
+        return;
+      }
+
       // Call the login API
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -69,15 +83,32 @@ export default function LoginPage() {
 
       if (!response.ok) {
         console.error("Login failed:", data.message);
-        throw new Error(
-          data.message || "Login failed. Please check your credentials."
-        );
+
+        // Provide more helpful error messages
+        if (data.message === "Invalid credentials") {
+          if (values.password !== "password123") {
+            throw new Error(
+              "Invalid password. For test accounts, use 'password123'."
+            );
+          } else {
+            throw new Error(
+              "Login failed. Please check your credentials and try again."
+            );
+          }
+        } else {
+          throw new Error(
+            data.message || "Login failed. Please check your credentials."
+          );
+        }
       }
 
       console.log("Login successful, storing token");
 
       // Store token in localStorage
       localStorage.setItem("token", data.token);
+
+      // Store user data
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirect based on user role
       if (data.user.role === "admin") {
@@ -105,6 +136,12 @@ export default function LoginPage() {
               <p className="text-gray-500 dark:text-gray-400">
                 Enter your credentials to access your account
               </p>
+              <div className="mt-2 text-sm text-muted-foreground p-2 bg-muted rounded-md">
+                <p className="font-medium">Test Accounts:</p>
+                <p>Admin: test@example.com / password123</p>
+                <p>Doctor: doctor@example.com / password123</p>
+                <p>Patient: patient@example.com / password123</p>
+              </div>
             </div>
 
             {error && (
