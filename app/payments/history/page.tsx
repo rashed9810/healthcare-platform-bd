@@ -198,9 +198,7 @@ export default function PaymentHistoryPage() {
                 <TableBody>
                   {filteredPayments.map((payment) => (
                     <TableRow key={payment.id}>
-                      <TableCell>
-                        {formatDate(new Date(payment.createdAt))}
-                      </TableCell>
+                      <TableCell>{formatDate(payment.createdAt)}</TableCell>
                       <TableCell className="font-medium">
                         {payment.id.substring(0, 8).toUpperCase()}
                       </TableCell>

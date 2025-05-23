@@ -21,7 +21,7 @@ export function getServerTranslation(
 ): string {
   // Get language from cookies
   const cookieStore = cookies();
-  const languageCookie = cookieStore.get("language");
+  const languageCookie = (await cookieStore).get("language");
   const language = (languageCookie?.value || "en") as Language;
 
   // Get translation
@@ -38,7 +38,10 @@ export function getServerTranslation(
   // Replace parameters in the translation
   if (params) {
     return Object.entries(params).reduce((acc, [paramKey, paramValue]) => {
-      return acc.replace(new RegExp(`{{${paramKey}}}`, "g"), String(paramValue));
+      return acc.replace(
+        new RegExp(`{{${paramKey}}}`, "g"),
+        String(paramValue)
+      );
     }, value);
   }
 
@@ -49,8 +52,8 @@ export function getServerTranslation(
  * Get the current language from cookies
  * @returns Current language
  */
-export function getServerLanguage(): Language {
+export async function getServerLanguage(): Promise<Language> {
   const cookieStore = cookies();
-  const languageCookie = cookieStore.get("language");
+  const languageCookie = (await cookieStore).get("language");
   return (languageCookie?.value || "en") as Language;
 }

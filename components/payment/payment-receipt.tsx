@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Download, Printer, Share2 } from "lucide-react";
 import PaymentStatusBadge from "./payment-status-badge";
@@ -31,8 +37,10 @@ export default function PaymentReceipt({
   const [isPrinting, setIsPrinting] = useState(false);
 
   // Format payment date
-  const formattedDate = payment.createdAt ? formatDate(new Date(payment.createdAt)) : "N/A";
-  
+  const formattedDate = payment.createdAt
+    ? formatDate(payment.createdAt)
+    : "N/A";
+
   // Handle print receipt
   const handlePrint = () => {
     setIsPrinting(true);
@@ -50,13 +58,15 @@ export default function PaymentReceipt({
   const handleShare = () => {
     // In a real implementation, this would open a share dialog
     if (navigator.share) {
-      navigator.share({
-        title: "HealthConnect Payment Receipt",
-        text: `Payment receipt for appointment with ${doctorName} on ${appointmentDate}`,
-        url: window.location.href,
-      }).catch(err => {
-        console.error("Error sharing:", err);
-      });
+      navigator
+        .share({
+          title: "HealthConnect Payment Receipt",
+          text: `Payment receipt for appointment with ${doctorName} on ${appointmentDate}`,
+          url: window.location.href,
+        })
+        .catch((err) => {
+          console.error("Error sharing:", err);
+        });
     } else {
       alert("Sharing is not supported on this browser");
     }
@@ -74,7 +84,9 @@ export default function PaymentReceipt({
         <div className="flex justify-between items-center">
           <div>
             <p className="text-sm text-muted-foreground">Receipt Number</p>
-            <p className="font-medium">{payment.id.substring(0, 8).toUpperCase()}</p>
+            <p className="font-medium">
+              {payment.id.substring(0, 8).toUpperCase()}
+            </p>
           </div>
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Date</p>
@@ -113,7 +125,9 @@ export default function PaymentReceipt({
             <div>
               <p className="text-sm text-muted-foreground">Appointment Type</p>
               <p className="font-medium">
-                {appointmentType === "video" ? "Video Consultation" : "In-Person Visit"}
+                {appointmentType === "video"
+                  ? "Video Consultation"
+                  : "In-Person Visit"}
               </p>
             </div>
           )}
@@ -144,13 +158,18 @@ export default function PaymentReceipt({
 
         <div className="mt-6 pt-4 border-t print:hidden">
           <p className="text-xs text-center text-muted-foreground mb-2">
-            This is an electronic receipt for your payment. 
-            Thank you for choosing HealthConnect.
+            This is an electronic receipt for your payment. Thank you for
+            choosing HealthConnect.
           </p>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between print:hidden">
-        <Button variant="outline" size="sm" onClick={handlePrint} disabled={isPrinting}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handlePrint}
+          disabled={isPrinting}
+        >
           <Printer className="mr-2 h-4 w-4" />
           Print
         </Button>

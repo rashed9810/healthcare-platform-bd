@@ -126,7 +126,7 @@ function PaymentDetailsContent() {
 
   // Format appointment date and time
   const formattedAppointmentDate = appointment
-    ? formatDate(new Date(`${appointment.date}T00:00:00`))
+    ? formatDate(`${appointment.date}T00:00:00`)
     : "";
 
   const formattedAppointmentTime = appointment?.time || "";
