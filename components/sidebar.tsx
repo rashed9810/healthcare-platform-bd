@@ -16,7 +16,14 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Home, Calendar, Search, Stethoscope, LogOut } from "lucide-react";
+import {
+  Home,
+  Calendar,
+  Search,
+  Stethoscope,
+  LogOut,
+  Pill,
+} from "lucide-react";
 import { isAuthenticated } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
@@ -97,20 +104,37 @@ export function AppSidebar() {
             </SidebarMenuItem>
 
             {isLoggedIn && (
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActive("/appointments")}
-                  className="group transition-colors hover:bg-primary/5"
-                >
-                  <Link href="/appointments">
-                    <Calendar className="h-5 w-5 text-primary group-hover:text-primary" />
-                    <span className="group-hover:text-primary">
-                      My Appointments
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive("/appointments")}
+                    className="group transition-colors hover:bg-primary/5"
+                  >
+                    <Link href="/appointments">
+                      <Calendar className="h-5 w-5 text-primary group-hover:text-primary" />
+                      <span className="group-hover:text-primary">
+                        My Appointments
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive("/prescriptions")}
+                    className="group transition-colors hover:bg-primary/5"
+                  >
+                    <Link href="/prescriptions">
+                      <Pill className="h-5 w-5 text-primary group-hover:text-primary" />
+                      <span className="group-hover:text-primary">
+                        Prescriptions
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </>
             )}
           </SidebarMenu>
         </SidebarContent>

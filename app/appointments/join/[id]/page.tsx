@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
-import VideoConsultation from "@/components/video-call/video-consultation";
+import EnhancedVideoConsultation from "@/components/video-call/enhanced-video-consultation";
 import { getAppointment } from "@/lib/api/appointments";
 import type { Appointment } from "@/lib/api/types";
 
@@ -90,7 +90,7 @@ export default function JoinAppointmentPage() {
           <div className="lg:col-span-3">
             <Card className="h-[600px]">
               <CardContent className="p-0 h-full">
-                <VideoConsultation
+                <EnhancedVideoConsultation
                   appointmentId={appointmentId}
                   doctorId={appointment.doctorId}
                   patientId={appointment.patientId}

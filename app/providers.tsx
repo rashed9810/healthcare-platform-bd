@@ -3,7 +3,7 @@
 import React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/contexts/auth-context";
-import { I18nProvider } from "@/lib/i18n-simple";
+import { I18nProvider } from "@/lib/i18n/i18n-context";
 
 // Import SidebarProvider directly to avoid circular dependencies
 import { SidebarProvider } from "@/components/ui/sidebar";
