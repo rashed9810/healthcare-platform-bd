@@ -1,25 +1,47 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  CreditCard, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  CreditCard,
+  Clock,
+  CheckCircle,
+  XCircle,
   RefreshCw,
   Smartphone,
   Wallet,
   AlertTriangle,
   Bell,
-  Eye
-} from 'lucide-react';
-import { PaymentDetails, PaymentStatus, PaymentMethod } from '@/lib/api/types';
-import { formatCurrency } from '@/lib/utils';
+  Eye,
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  PieChart,
+  Calendar,
+  Users,
+  Star,
+  Gift,
+  Shield,
+  Zap,
+  Download,
+  Filter,
+  Search,
+} from "lucide-react";
+import { PaymentDetails, PaymentStatus, PaymentMethod } from "@/lib/api/types";
+import { formatCurrency } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PaymentTracker {
   attempts: number;
@@ -51,11 +73,16 @@ export default function EnhancedPaymentDashboard({
 }: EnhancedPaymentDashboardProps) {
   const [refreshing, setRefreshing] = useState(false);
   const [notifications, setNotifications] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterMethod, setFilterMethod] = useState<string>("all");
+  const [language, setLanguage] = useState<"en" | "bn">("en");
+  const [timeRange, setTimeRange] = useState<string>("30d");
 
   // Auto-refresh every 30 seconds for pending payments
   useEffect(() => {
-    const hasPendingPayments = payments.some(p => 
-      p.status === 'pending' || p.status === 'processing'
+    const hasPendingPayments = payments.some(
+      (p) => p.status === "pending" || p.status === "processing"
     );
 
     if (hasPendingPayments) {
@@ -79,14 +106,14 @@ export default function EnhancedPaymentDashboard({
 
   const getStatusIcon = (status: PaymentStatus) => {
     switch (status) {
-      case 'completed':
+      case "completed":
         return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'failed':
+      case "failed":
         return <XCircle className="h-5 w-5 text-red-500" />;
-      case 'pending':
-      case 'processing':
+      case "pending":
+      case "processing":
         return <Clock className="h-5 w-5 text-yellow-500" />;
-      case 'cancelled':
+      case "cancelled":
         return <XCircle className="h-5 w-5 text-gray-500" />;
       default:
         return <AlertTriangle className="h-5 w-5 text-orange-500" />;
@@ -95,29 +122,29 @@ export default function EnhancedPaymentDashboard({
 
   const getStatusColor = (status: PaymentStatus) => {
     switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'failed':
-        return 'bg-red-100 text-red-800';
-      case 'pending':
-      case 'processing':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'cancelled':
-        return 'bg-gray-100 text-gray-800';
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "failed":
+        return "bg-red-100 text-red-800";
+      case "pending":
+      case "processing":
+        return "bg-yellow-100 text-yellow-800";
+      case "cancelled":
+        return "bg-gray-100 text-gray-800";
       default:
-        return 'bg-orange-100 text-orange-800';
+        return "bg-orange-100 text-orange-800";
     }
   };
 
   const getMethodIcon = (method: PaymentMethod) => {
     switch (method) {
-      case 'bkash':
-      case 'nagad':
-      case 'rocket':
+      case "bkash":
+      case "nagad":
+      case "rocket":
         return <Smartphone className="h-4 w-4" />;
-      case 'card':
+      case "card":
         return <CreditCard className="h-4 w-4" />;
-      case 'cash':
+      case "cash":
         return <Wallet className="h-4 w-4" />;
       default:
         return <CreditCard className="h-4 w-4" />;
@@ -126,16 +153,16 @@ export default function EnhancedPaymentDashboard({
 
   const getMethodDisplayName = (method: PaymentMethod) => {
     switch (method) {
-      case 'bkash':
-        return 'bKash';
-      case 'nagad':
-        return 'Nagad';
-      case 'rocket':
-        return 'Rocket';
-      case 'card':
-        return 'Card';
-      case 'cash':
-        return 'Cash';
+      case "bkash":
+        return "bKash";
+      case "nagad":
+        return "Nagad";
+      case "rocket":
+        return "Rocket";
+      case "card":
+        return "Card";
+      case "cash":
+        return "Cash";
       default:
         return method;
     }
@@ -143,14 +170,16 @@ export default function EnhancedPaymentDashboard({
 
   const getTrackingProgress = (tracker?: PaymentTracker) => {
     if (!tracker) return 0;
-    
+
     // Calculate progress based on attempts (max 5 attempts)
     return Math.min((tracker.attempts / 5) * 100, 100);
   };
 
-  const pendingPayments = payments.filter(p => p.status === 'pending' || p.status === 'processing');
-  const completedPayments = payments.filter(p => p.status === 'completed');
-  const failedPayments = payments.filter(p => p.status === 'failed');
+  const pendingPayments = payments.filter(
+    (p) => p.status === "pending" || p.status === "processing"
+  );
+  const completedPayments = payments.filter((p) => p.status === "completed");
+  const failedPayments = payments.filter((p) => p.status === "failed");
 
   return (
     <div className="space-y-6">
@@ -160,7 +189,9 @@ export default function EnhancedPaymentDashboard({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Payments</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Payments
+                </p>
                 <p className="text-2xl font-bold">{payments.length}</p>
               </div>
               <CreditCard className="h-8 w-8 text-blue-500" />
@@ -173,7 +204,9 @@ export default function EnhancedPaymentDashboard({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-yellow-600">{pendingPayments.length}</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {pendingPayments.length}
+                </p>
               </div>
               <Clock className="h-8 w-8 text-yellow-500" />
             </div>
@@ -185,7 +218,9 @@ export default function EnhancedPaymentDashboard({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Completed</p>
-                <p className="text-2xl font-bold text-green-600">{completedPayments.length}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {completedPayments.length}
+                </p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-500" />
             </div>
@@ -197,7 +232,9 @@ export default function EnhancedPaymentDashboard({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Failed</p>
-                <p className="text-2xl font-bold text-red-600">{failedPayments.length}</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {failedPayments.length}
+                </p>
               </div>
               <XCircle className="h-8 w-8 text-red-500" />
             </div>
@@ -208,13 +245,15 @@ export default function EnhancedPaymentDashboard({
       {/* Actions */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Payment History</h2>
-        <Button 
-          onClick={handleRefresh} 
+        <Button
+          onClick={handleRefresh}
           disabled={refreshing}
           variant="outline"
           size="sm"
         >
-          <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+          <RefreshCw
+            className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
+          />
           Refresh
         </Button>
       </div>
@@ -224,8 +263,8 @@ export default function EnhancedPaymentDashboard({
         <Alert>
           <Bell className="h-4 w-4" />
           <AlertDescription>
-            You have {pendingPayments.length} pending payment(s). 
-            Status will be automatically updated every 30 seconds.
+            You have {pendingPayments.length} pending payment(s). Status will be
+            automatically updated every 30 seconds.
           </AlertDescription>
         </Alert>
       )}
@@ -274,8 +313,8 @@ export default function EnhancedPaymentDashboard({
                         <Eye className="h-4 w-4" />
                       </Button>
                     )}
-                    
-                    {payment.status === 'failed' && onRetryPayment && (
+
+                    {payment.status === "failed" && onRetryPayment && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -302,11 +341,18 @@ export default function EnhancedPaymentDashboard({
                   {payment.tracker && (
                     <div className="space-y-2">
                       <div className="flex justify-between text-xs text-blue-600">
-                        <span>Verification attempts: {payment.tracker.attempts}/5</span>
-                        <span>Last checked: {new Date(payment.tracker.lastChecked).toLocaleTimeString()}</span>
+                        <span>
+                          Verification attempts: {payment.tracker.attempts}/5
+                        </span>
+                        <span>
+                          Last checked:{" "}
+                          {new Date(
+                            payment.tracker.lastChecked
+                          ).toLocaleTimeString()}
+                        </span>
                       </div>
-                      <Progress 
-                        value={getTrackingProgress(payment.tracker)} 
+                      <Progress
+                        value={getTrackingProgress(payment.tracker)}
                         className="h-2"
                       />
                     </div>
@@ -322,7 +368,9 @@ export default function EnhancedPaymentDashboard({
         <Card>
           <CardContent className="p-8 text-center">
             <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">No Payments Found</h3>
+            <h3 className="text-lg font-semibold text-gray-600 mb-2">
+              No Payments Found
+            </h3>
             <p className="text-gray-500">You haven't made any payments yet.</p>
           </CardContent>
         </Card>

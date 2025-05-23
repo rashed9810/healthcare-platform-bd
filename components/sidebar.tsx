@@ -26,6 +26,7 @@ import {
   FileText,
   Bell,
   BarChart3,
+  CreditCard,
 } from "lucide-react";
 import { isAuthenticated } from "@/lib/api/auth";
 import { useRouter } from "next/navigation";
@@ -179,6 +180,19 @@ export function AppSidebar() {
                       <span className="group-hover:text-primary">
                         Health Analytics
                       </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive("/payments")}
+                    className="group transition-colors hover:bg-primary/5"
+                  >
+                    <Link href="/payments">
+                      <CreditCard className="h-5 w-5 text-primary group-hover:text-primary" />
+                      <span className="group-hover:text-primary">Payments</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
