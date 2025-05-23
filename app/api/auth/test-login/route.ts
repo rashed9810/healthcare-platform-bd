@@ -1,8 +1,4 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-
-// JWT secret should be in environment variables
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 // Mock user data for testing
 const MOCK_USERS = [
@@ -32,9 +28,20 @@ const MOCK_USERS = [
   },
 ];
 
+export async function GET() {
+  return NextResponse.json({
+    message: "Test login endpoint is working",
+    users: MOCK_USERS.map(user => ({
+      email: user.email,
+      password: user.password,
+      role: user.role
+    }))
+  });
+}
+
 export async function POST(request: Request) {
   try {
-    console.log("Login API route called");
+    console.log("Test Login API route called");
 
     // Parse request body
     let body;
@@ -42,13 +49,13 @@ export async function POST(request: Request) {
       body = await request.json();
       console.log("Request body parsed:", {
         email: body.email,
-        password: body.password, // Log the actual password for debugging
+        password: body.password,
         hasPassword: !!body.password,
       });
     } catch (parseError) {
       console.error("Failed to parse request body:", parseError);
       return NextResponse.json(
-        { message: "Invalid request body" },
+        { message: "Invalid request body", error: parseError },
         { status: 400 }
       );
     }
@@ -74,7 +81,11 @@ export async function POST(request: Request) {
     if (!user) {
       console.log("User not found with email:", email);
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        { 
+          message: "Invalid credentials", 
+          error: "User not found",
+          providedEmail: email
+        },
         { status: 401 }
       );
     }
@@ -93,34 +104,30 @@ export async function POST(request: Request) {
     if (password !== user.password) {
       console.log("Invalid password for user:", email);
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        { 
+          message: "Invalid credentials", 
+          error: "Password mismatch",
+          providedPassword: password,
+          expectedPassword: user.password
+        },
         { status: 401 }
       );
     }
 
-    // Create JWT token
-    console.log("Creating JWT token...");
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
-    console.log("JWT token created successfully");
-
-    // Return user data (excluding password) and token
-    const { password: _, ...userWithoutPassword } = user;
-
-    console.log("Login successful, returning user data and token");
+    // Return success
     return NextResponse.json({
-      user: userWithoutPassword,
-      token,
+      message: "Test login successful",
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role
+      }
     });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Test login error:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "Internal server error", error },
       { status: 500 }
     );
   }
