@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -9,18 +9,16 @@ import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import { initiatePayment } from "@/lib/api/payments";
 import PaymentProcessor from "@/components/payment/payment-processor";
 import type { PaymentMethod } from "@/lib/api/types";
+import {
+  WithSearchParams,
+  useSearchParams,
+} from "@/components/providers/search-params-provider";
 
 export default function PaymentProcessPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        </div>
-      }
-    >
+    <WithSearchParams>
       <ActualPaymentProcessPage />
-    </Suspense>
+    </WithSearchParams>
   );
 }
 
