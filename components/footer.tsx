@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Facebook,
@@ -7,8 +9,10 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 export default function Footer() {
+  const { t } = useI18n();
   return (
     <footer className="border-t py-12 md:py-16 bg-muted/30">
       <div className="container px-4">
@@ -16,7 +20,7 @@ export default function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-xl font-bold text-primary">
-                HealthConnect
+                {t("common.appName")}
               </span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs">
@@ -58,14 +62,16 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">Quick Links</h3>
+            <h3 className="font-medium text-lg mb-4">
+              {t("navigation.quickLinks")}
+            </h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/about"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  About Us
+                  {t("navigation.about")}
                 </Link>
               </li>
               <li>
@@ -73,7 +79,7 @@ export default function Footer() {
                   href="/find-doctor"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Find a Doctor
+                  {t("navigation.findDoctor")}
                 </Link>
               </li>
               <li>
@@ -81,7 +87,7 @@ export default function Footer() {
                   href="/symptom-checker"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Symptom Checker
+                  {t("navigation.symptomChecker")}
                 </Link>
               </li>
               <li>
@@ -89,21 +95,23 @@ export default function Footer() {
                   href="/appointments"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  My Appointments
+                  {t("navigation.appointments")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">Legal</h3>
+            <h3 className="font-medium text-lg mb-4">
+              {t("navigation.legal")}
+            </h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/privacy"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Privacy Policy
+                  {t("navigation.privacyPolicy")}
                 </Link>
               </li>
               <li>
@@ -111,7 +119,7 @@ export default function Footer() {
                   href="/terms"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Terms of Service
+                  {t("navigation.termsOfService")}
                 </Link>
               </li>
               <li>
@@ -119,7 +127,7 @@ export default function Footer() {
                   href="/cookies"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Cookie Policy
+                  {t("navigation.cookiePolicy")}
                 </Link>
               </li>
               <li>
@@ -127,14 +135,16 @@ export default function Footer() {
                   href="/accessibility"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Accessibility
+                  {t("navigation.accessibility")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-medium text-lg mb-4">Contact</h3>
+            <h3 className="font-medium text-lg mb-4">
+              {t("navigation.contact")}
+            </h3>
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
@@ -171,33 +181,33 @@ export default function Footer() {
 
         <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} HealthConnect Bangladesh. All
-            rights reserved.
+            &copy; {new Date().getFullYear()} {t("common.appName")} Bangladesh.{" "}
+            {t("common.allRightsReserved")}
           </p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <Link
               href="/about"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              About
+              {t("navigation.about")}
             </Link>
             <Link
               href="/privacy"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              Privacy
+              {t("navigation.privacyPolicy").split(" ")[0]}
             </Link>
             <Link
               href="/terms"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              Terms
+              {t("navigation.termsOfService").split(" ")[0]}
             </Link>
             <Link
               href="/contact"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              Contact
+              {t("navigation.contact")}
             </Link>
           </div>
         </div>

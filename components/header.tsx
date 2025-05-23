@@ -12,9 +12,11 @@ import {
 import { Menu } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import LanguageSwitcher from "@/components/language-switcher";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -22,7 +24,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-2xl font-bold text-primary">
-              HealthConnect
+              {t("common.appName")}
             </span>
           </Link>
         </div>
@@ -41,49 +43,55 @@ export default function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
-              <SheetTitle className="text-lg font-bold">Menu</SheetTitle>
+              <SheetTitle className="text-lg font-bold">
+                {t("common.appName")}
+              </SheetTitle>
               <nav className="flex flex-col gap-4 mt-4">
                 <Link
                   href="/"
                   className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsOpen(false)}
                 >
-                  Home
+                  {t("navigation.home")}
                 </Link>
                 <Link
                   href="/symptom-checker"
                   className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsOpen(false)}
                 >
-                  Symptom Checker
+                  {t("navigation.symptomChecker")}
                 </Link>
                 <Link
                   href="/find-doctor"
                   className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsOpen(false)}
                 >
-                  Find Doctor
+                  {t("navigation.findDoctor")}
                 </Link>
                 <div className="flex flex-col gap-2 mt-4">
                   <Button asChild variant="outline">
                     <Link href="/login" onClick={() => setIsOpen(false)}>
-                      Login
+                      {t("auth.login")}
                     </Link>
                   </Button>
                   <Button asChild>
                     <Link href="/register" onClick={() => setIsOpen(false)}>
-                      Register
+                      {t("auth.register")}
                     </Link>
                   </Button>
                 </div>
                 <div className="flex items-center gap-4 mt-6 pt-6 border-t">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Theme:</span>
+                      <span className="text-sm font-medium">
+                        {t("settings.theme")}:
+                      </span>
                       <ThemeToggle />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Language:</span>
+                      <span className="text-sm font-medium">
+                        {t("settings.language")}:
+                      </span>
                       <LanguageSwitcher />
                     </div>
                   </div>

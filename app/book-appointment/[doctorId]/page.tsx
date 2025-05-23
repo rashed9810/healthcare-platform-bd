@@ -23,11 +23,14 @@ import {
   Loader2,
   ArrowLeft,
   CreditCard,
+  BrainCircuit,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
 import AppointmentCalendar from "@/components/appointment-calendar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/lib/i18n/i18n-context";
 import { getDoctor } from "@/lib/api/doctors";
 import { bookAppointment } from "@/lib/api/appointments";
 import { isAuthenticated } from "@/lib/api/auth";
@@ -46,6 +49,7 @@ export default function BookAppointmentPage({
   params,
 }: BookAppointmentPageProps) {
   const router = useRouter();
+  const { t } = useI18n();
   const { doctorId } = params as { doctorId: string }; // Explicitly type params
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -186,11 +190,27 @@ export default function BookAppointmentPage({
       <div className="max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">
-            Book an Appointment
+            {t("appointment.bookAppointment")}
           </h1>
           <p className="text-muted-foreground mt-2">
-            Select a date and time that works for you
+            {t("appointment.selectDateAndTime")}
           </p>
+
+          <div className="mt-4 p-4 bg-muted/50 rounded-lg border">
+            <div className="flex items-center">
+              <BrainCircuit className="h-5 w-5 text-primary mr-2" />
+              <h3 className="font-medium">{t("appointment.tryAiScheduler")}</h3>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1 mb-3">
+              {t("appointment.aiSchedulerPromo")}
+            </p>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/book-appointment/smart">
+                <BrainCircuit className="h-4 w-4 mr-2" />
+                {t("appointment.useAiScheduler")}
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {bookingError && (

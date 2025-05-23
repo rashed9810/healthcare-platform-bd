@@ -9,69 +9,81 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
+import { useI18n, Language } from "@/lib/i18n/i18n-context";
+import { cn } from "@/lib/utils";
 
-type Language = "en" | "bn";
+interface LanguageSwitcherProps {
+  variant?: "default" | "outline" | "ghost";
+  size?: "default" | "sm" | "lg" | "icon";
+  className?: string;
+}
 
-export default function LanguageSwitcher() {
-  const [language, setLanguage] = useState<Language>("en");
+export default function LanguageSwitcher({
+  variant = "outline",
+  size = "sm",
+  className,
+}: LanguageSwitcherProps) {
+  const { language, setLanguage, t, availableLanguages } = useI18n();
   const [mounted, setMounted] = useState(false);
 
   // Ensure component is mounted to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
-
-    // Load language preference from localStorage
-    if (typeof window !== "undefined") {
-      const savedLanguage = localStorage.getItem("language") as Language;
-      if (savedLanguage && (savedLanguage === "en" || savedLanguage === "bn")) {
-        setLanguage(savedLanguage);
-      }
-    }
   }, []);
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
-
-    // Save language preference to localStorage
-    if (typeof window !== "undefined") {
-      localStorage.setItem("language", newLanguage);
-    }
-
-    // Reload the page to apply the language change
-    window.location.reload();
   };
 
   // Don't render the actual content until after hydration
   if (!mounted) {
     return (
-      <Button variant="outline" size="sm" className="h-8 gap-1" disabled>
+      <Button
+        variant={variant}
+        size={size}
+        className={cn("gap-1", className)}
+        disabled
+      >
         <Globe className="h-4 w-4" />
         <span>English</span>
       </Button>
     );
   }
 
+  // Get the current language name
+  const getCurrentLanguageName = () => {
+    const currentLanguage = availableLanguages.find(
+      (lang) => lang.code === language
+    );
+    return currentLanguage ? currentLanguage.name : "English";
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 gap-1">
+        <Button
+          variant={variant}
+          size={size}
+          className={cn("gap-1", className)}
+        >
           <Globe className="h-4 w-4" />
-          {language === "en" ? "English" : "বাংলা"}
+          {getCurrentLanguageName()}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          onClick={() => handleLanguageChange("en")}
-          className={language === "en" ? "bg-primary/10 font-medium" : ""}
-        >
-          <span className="mr-2">🇺🇸</span> English
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleLanguageChange("bn")}
-          className={language === "bn" ? "bg-primary/10 font-medium" : ""}
-        >
-          <span className="mr-2">🇧🇩</span> বাংলা (Bengali)
-        </DropdownMenuItem>
+        {availableLanguages.map((lang) => (
+          <DropdownMenuItem
+            key={lang.code}
+            onClick={() => handleLanguageChange(lang.code)}
+            className={cn(
+              "cursor-pointer",
+              language === lang.code && "bg-primary/10 font-medium"
+            )}
+          >
+            <span className="mr-2">{lang.code === "en" ? "🇺🇸" : "🇧🇩"}</span>
+            {lang.name}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
