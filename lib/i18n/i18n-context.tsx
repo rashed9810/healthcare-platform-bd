@@ -17,7 +17,9 @@ const resources = {
 // Type for nested translation keys
 type NestedKeyOf<T> = T extends object
   ? {
-      [K in keyof T]: `${K & string}` | `${K & string}.${NestedKeyOf<T[K]> & string}`;
+      [K in keyof T]:
+        | `${K & string}`
+        | `${K & string}.${NestedKeyOf<T[K]> & string}`;
     }[keyof T]
   : never;
 
@@ -44,18 +46,38 @@ const availableLanguages = [
 
 // Provider component
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [storedLanguage, setStoredLanguage] = useLocalStorage<Language>("language", "en");
-  const [language, setLanguage] = useState<Language>(storedLanguage);
+  const [storedLanguage, setStoredLanguage] = useLocalStorage<Language>(
+    "language",
+    "en"
+  );
+
+  // Validate the stored language to ensure it's a valid Language type
+  const initialLanguage: Language =
+    storedLanguage === "en" || storedLanguage === "bn" ? storedLanguage : "en";
+
+  const [language, setLanguage] = useState<Language>(initialLanguage);
 
   // Update stored language when language changes
   useEffect(() => {
-    setStoredLanguage(language);
-    document.documentElement.lang = language;
-    document.documentElement.dir = dir();
+    // Ensure we're storing a valid language code
+    if (language === "en" || language === "bn") {
+      setStoredLanguage(language);
+      document.documentElement.lang = language;
+      document.documentElement.dir = dir();
+    } else {
+      // If invalid language is detected, reset to default
+      console.warn(
+        `Invalid language detected: ${language}. Resetting to default.`
+      );
+      setLanguage("en");
+    }
   }, [language, setStoredLanguage]);
 
   // Get translation for a key
-  const t = (key: TranslationKey, params?: Record<string, string | number>): string => {
+  const t = (
+    key: TranslationKey,
+    params?: Record<string, string | number>
+  ): string => {
     const keys = key.split(".");
     let value: any = resources[language];
 
@@ -69,7 +91,10 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     // Replace parameters in the translation
     if (params) {
       return Object.entries(params).reduce((acc, [paramKey, paramValue]) => {
-        return acc.replace(new RegExp(`{{${paramKey}}}`, "g"), String(paramValue));
+        return acc.replace(
+          new RegExp(`{{${paramKey}}}`, "g"),
+          String(paramValue)
+        );
       }, value);
     }
 
