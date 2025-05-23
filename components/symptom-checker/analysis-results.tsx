@@ -2,45 +2,55 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { 
-  AlertCircle, 
-  AlertTriangle, 
-  Clock, 
-  Activity, 
-  User, 
-  Heart, 
-  Stethoscope, 
-  Calendar, 
-  ArrowRight, 
+import {
+  AlertCircle,
+  AlertTriangle,
+  Clock,
+  Activity,
+  User,
+  Heart,
+  Stethoscope,
+  Calendar,
+  ArrowRight,
   BrainCircuit,
   CheckCircle2,
-  Info
+  Info,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/i18n-context";
-import { 
-  HealthRecommendation, 
-  PossibleCondition, 
-  SymptomAnalysisResult, 
-  UrgencyLevel 
+import {
+  HealthRecommendation,
+  PossibleCondition,
+  SymptomAnalysisResult,
 } from "@/lib/ai/symptom-analyzer";
+import { UrgencyLevel } from "@/lib/ai/recommendation-engine";
 
 interface AnalysisResultsProps {
   results: SymptomAnalysisResult;
   onReset: () => void;
 }
 
-export default function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
+export default function AnalysisResults({
+  results,
+  onReset,
+}: AnalysisResultsProps) {
   const { t } = useI18n();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("conditions");
-  
+
   // Get urgency level color and text
   const getUrgencyColor = (urgency: UrgencyLevel): string => {
     switch (urgency) {
@@ -56,7 +66,7 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
         return "text-muted-foreground";
     }
   };
-  
+
   const getUrgencyBgColor = (urgency: UrgencyLevel): string => {
     switch (urgency) {
       case UrgencyLevel.EMERGENCY:
@@ -71,7 +81,7 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
         return "bg-muted";
     }
   };
-  
+
   const getUrgencyText = (urgency: UrgencyLevel): string => {
     switch (urgency) {
       case UrgencyLevel.EMERGENCY:
@@ -86,26 +96,26 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
         return t("urgency.unknown");
     }
   };
-  
+
   // Handle booking appointment
   const handleBookAppointment = () => {
     // Redirect to find doctor page with specialties as query params
     const specialties = results.recommendedSpecialties.join(",");
     router.push(`/find-doctor?specialties=${specialties}`);
   };
-  
+
   // Handle smart booking
   const handleSmartBooking = () => {
     // Redirect to AI scheduler with symptoms as query params
     const symptomIds = results.possibleConditions
-      .flatMap(condition => condition.symptoms)
+      .flatMap((condition) => condition.symptoms)
       .filter((value, index, self) => self.indexOf(value) === index) // Remove duplicates
-      .map(symptom => `sym_${symptom.toLowerCase().replace(/\s+/g, '_')}`)
+      .map((symptom) => `sym_${symptom.toLowerCase().replace(/\s+/g, "_")}`)
       .join(",");
-    
+
     router.push(`/book-appointment/smart?symptoms=${symptomIds}`);
   };
-  
+
   return (
     <div className="space-y-6">
       <Card>
@@ -117,8 +127,10 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
                 {t("symptomChecker.analysisResultsDescription")}
               </CardDescription>
             </div>
-            <Badge 
-              className={`${getUrgencyBgColor(results.urgencyLevel)} ${getUrgencyColor(results.urgencyLevel)}`}
+            <Badge
+              className={`${getUrgencyBgColor(
+                results.urgencyLevel
+              )} ${getUrgencyColor(results.urgencyLevel)}`}
             >
               {getUrgencyText(results.urgencyLevel)}
             </Badge>
@@ -134,9 +146,12 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
               </AlertDescription>
             </Alert>
           )}
-          
+
           {results.urgencyLevel === UrgencyLevel.HIGH && (
-            <Alert variant="warning" className="mb-6 border-orange-500 text-orange-500">
+            <Alert
+              variant="warning"
+              className="mb-6 border-orange-500 text-orange-500"
+            >
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>{t("symptomChecker.urgentWarning")}</AlertTitle>
               <AlertDescription>
@@ -144,13 +159,17 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
               </AlertDescription>
             </Alert>
           )}
-          
+
           <Tabs defaultValue="conditions" onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="conditions">{t("symptomChecker.possibleConditions")}</TabsTrigger>
-              <TabsTrigger value="recommendations">{t("symptomChecker.recommendations")}</TabsTrigger>
+              <TabsTrigger value="conditions">
+                {t("symptomChecker.possibleConditions")}
+              </TabsTrigger>
+              <TabsTrigger value="recommendations">
+                {t("symptomChecker.recommendations")}
+              </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="conditions" className="space-y-4 mt-4">
               {results.possibleConditions.length > 0 ? (
                 <div className="space-y-4">
@@ -166,12 +185,15 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
                 </div>
               )}
             </TabsContent>
-            
+
             <TabsContent value="recommendations" className="space-y-4 mt-4">
               {results.recommendations.length > 0 ? (
                 <div className="space-y-4">
                   {results.recommendations.map((recommendation, index) => (
-                    <RecommendationCard key={index} recommendation={recommendation} />
+                    <RecommendationCard
+                      key={index}
+                      recommendation={recommendation}
+                    />
                   ))}
                 </div>
               ) : (
@@ -187,8 +209,8 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
         <CardFooter className="flex flex-col space-y-3">
           <div className="flex flex-col sm:flex-row w-full gap-3">
             {activeTab === "conditions" && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full sm:w-auto"
                 onClick={() => setActiveTab("recommendations")}
               >
@@ -196,10 +218,10 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             )}
-            
+
             {activeTab === "recommendations" && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full sm:w-auto"
                 onClick={() => setActiveTab("conditions")}
               >
@@ -207,28 +229,28 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             )}
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               className="w-full sm:w-auto"
               onClick={onReset}
             >
               {t("symptomChecker.checkDifferentSymptoms")}
             </Button>
           </div>
-          
+
           <Separator className="my-2" />
-          
+
           <div className="flex flex-col sm:flex-row w-full gap-3">
-            <Button 
+            <Button
               className="w-full sm:flex-1"
               onClick={handleBookAppointment}
             >
               <Stethoscope className="mr-2 h-4 w-4" />
               {t("symptomChecker.findSpecialist")}
             </Button>
-            
-            <Button 
+
+            <Button
               variant="secondary"
               className="w-full sm:flex-1"
               onClick={handleSmartBooking}
@@ -246,7 +268,7 @@ export default function AnalysisResults({ results, onReset }: AnalysisResultsPro
 // Component for displaying a possible condition
 function ConditionCard({ condition }: { condition: PossibleCondition }) {
   const { t } = useI18n();
-  
+
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -260,16 +282,20 @@ function ConditionCard({ condition }: { condition: PossibleCondition }) {
       <CardContent className="space-y-3">
         <div>
           <div className="mb-1 flex justify-between text-sm">
-            <span className="text-muted-foreground">{t("symptomChecker.matchProbability")}</span>
+            <span className="text-muted-foreground">
+              {t("symptomChecker.matchProbability")}
+            </span>
             <span className="font-medium">{condition.probability}%</span>
           </div>
           <Progress value={condition.probability} className="h-2" />
         </div>
-        
+
         <p className="text-sm text-muted-foreground">{condition.description}</p>
-        
+
         <div>
-          <h4 className="text-sm font-medium mb-1">{t("symptomChecker.matchedSymptoms")}</h4>
+          <h4 className="text-sm font-medium mb-1">
+            {t("symptomChecker.matchedSymptoms")}
+          </h4>
           <div className="flex flex-wrap gap-1">
             {condition.symptoms.map((symptom, index) => (
               <Badge key={index} variant="secondary" className="text-xs">
@@ -278,9 +304,11 @@ function ConditionCard({ condition }: { condition: PossibleCondition }) {
             ))}
           </div>
         </div>
-        
+
         <div>
-          <h4 className="text-sm font-medium mb-1">{t("symptomChecker.recommendedSpecialties")}</h4>
+          <h4 className="text-sm font-medium mb-1">
+            {t("symptomChecker.recommendedSpecialties")}
+          </h4>
           <div className="flex flex-wrap gap-1">
             {condition.specialties.map((specialty, index) => (
               <Badge key={index} variant="outline" className="text-xs">
@@ -295,9 +323,13 @@ function ConditionCard({ condition }: { condition: PossibleCondition }) {
 }
 
 // Component for displaying a health recommendation
-function RecommendationCard({ recommendation }: { recommendation: HealthRecommendation }) {
+function RecommendationCard({
+  recommendation,
+}: {
+  recommendation: HealthRecommendation;
+}) {
   const { t } = useI18n();
-  
+
   // Get icon based on recommendation type
   const getIcon = () => {
     switch (recommendation.type) {
@@ -313,7 +345,7 @@ function RecommendationCard({ recommendation }: { recommendation: HealthRecommen
         return <Info className="h-5 w-5" />;
     }
   };
-  
+
   // Get title based on recommendation type
   const getTitle = () => {
     switch (recommendation.type) {
@@ -329,7 +361,7 @@ function RecommendationCard({ recommendation }: { recommendation: HealthRecommen
         return t("symptomChecker.recommendation");
     }
   };
-  
+
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -340,42 +372,49 @@ function RecommendationCard({ recommendation }: { recommendation: HealthRecommen
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm">{recommendation.description}</p>
-        
+
         {recommendation.timeframe && (
           <div className="flex items-center text-sm">
             <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
             <span>
-              {t("symptomChecker.timeframe")}: <span className="font-medium">{recommendation.timeframe}</span>
+              {t("symptomChecker.timeframe")}:{" "}
+              <span className="font-medium">{recommendation.timeframe}</span>
             </span>
           </div>
         )}
-        
-        {recommendation.specialties && recommendation.specialties.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium mb-1">{t("symptomChecker.recommendedSpecialties")}</h4>
-            <div className="flex flex-wrap gap-1">
-              {recommendation.specialties.map((specialty, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {specialty}
-                </Badge>
-              ))}
+
+        {recommendation.specialties &&
+          recommendation.specialties.length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium mb-1">
+                {t("symptomChecker.recommendedSpecialties")}
+              </h4>
+              <div className="flex flex-wrap gap-1">
+                {recommendation.specialties.map((specialty, index) => (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    {specialty}
+                  </Badge>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-        
-        {recommendation.selfCareSteps && recommendation.selfCareSteps.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium mb-1">{t("symptomChecker.selfCareSteps")}</h4>
-            <ul className="space-y-1">
-              {recommendation.selfCareSteps.map((step, index) => (
-                <li key={index} className="text-sm flex items-start">
-                  <CheckCircle2 className="h-4 w-4 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
-                  <span>{step}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          )}
+
+        {recommendation.selfCareSteps &&
+          recommendation.selfCareSteps.length > 0 && (
+            <div>
+              <h4 className="text-sm font-medium mb-1">
+                {t("symptomChecker.selfCareSteps")}
+              </h4>
+              <ul className="space-y-1">
+                {recommendation.selfCareSteps.map((step, index) => (
+                  <li key={index} className="text-sm flex items-start">
+                    <CheckCircle2 className="h-4 w-4 mr-2 text-green-500 mt-0.5 flex-shrink-0" />
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
       </CardContent>
     </Card>
   );
