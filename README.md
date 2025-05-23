@@ -1,20 +1,33 @@
 # HealthConnect Bangladesh - Healthcare AI Appointment Booking System
 
-An AI-powered healthcare appointment booking platform designed to improve healthcare access in Bangladesh through intelligent doctor matching, multilingual support, and low-bandwidth optimization.
+An AI-powered healthcare appointment booking platform designed to improve healthcare access in Bangladesh through intelligent doctor matching, multilingual support, and mobile payment integration.
 
 ![HealthConnect Screenshot](public/images/healthconnect-screenshot.png)
 
 ## Project Overview
 
-HealthConnect Bangladesh is a comprehensive healthcare platform that connects patients with healthcare professionals through an intelligent matching system. The platform features symptom analysis, doctor recommendations, appointment scheduling, and video consultations optimized for low-bandwidth environments.
+HealthConnect Bangladesh is a comprehensive healthcare platform that connects patients with healthcare professionals through an intelligent matching system. The platform features advanced symptom analysis, AI-driven doctor recommendations, smart appointment scheduling, and integrated mobile payment options tailored for the Bangladeshi healthcare ecosystem.
+
+## Current Status
+
+The project has successfully implemented several key features:
+
+- ✅ **User Authentication System**: Secure login and registration with role-based access control
+- ✅ **Multilingual Interface**: Complete support for Bengali and English throughout the application
+- ✅ **Doctor Listing & Filtering**: Comprehensive doctor search with specialty and location filters
+- ✅ **Appointment Management**: Booking, rescheduling, and cancellation of appointments
+- ✅ **AI Scheduling System**: Smart appointment recommendations based on various factors
+- ✅ **Advanced Symptom Checker**: AI-powered symptom analysis with condition prediction
+- ✅ **Mobile Payment Integration**: Support for bKash, Nagad, and other local payment methods
+- ✅ **Responsive UI**: Clean, accessible interface that works across all device sizes
 
 ### Key Features
 
 - **AI-Driven Doctor Matching**: Intelligent system that matches patients with the right specialists based on symptoms and medical history
-- **Multilingual Interface**: Full support for Bengali and English with AI translation for medical terms
-- **Low Bandwidth Optimization**: Works reliably on 2G/3G connections with adaptive video quality
-- **Secure Video Consultations**: End-to-end encrypted video calls optimized for low bandwidth
-- **Mobile Payment Integration**: Seamless integration with popular mobile payment methods in Bangladesh
+- **Multilingual Interface**: Full support for Bengali and English with proper localization for medical terms
+- **Advanced Symptom Analysis**: AI-powered symptom checker that provides condition predictions and urgency assessment
+- **Smart Appointment Scheduling**: AI scheduling system that considers doctor availability, patient preferences, and symptom urgency
+- **Mobile Payment Integration**: Seamless integration with popular mobile payment methods in Bangladesh (bKash, Nagad)
 - **Geolocation-Based Recommendations**: Find doctors near you with real-time availability
 
 ## Tech Stack
@@ -22,140 +35,105 @@ HealthConnect Bangladesh is a comprehensive healthcare platform that connects pa
 ### Frontend
 
 - **Framework**: Next.js 14 (App Router)
-- **UI**: React, Tailwind CSS, shadcn/ui
-- **State Management**: React Hooks
-- **Form Handling**: React Hook Form, Zod
+- **UI**: React, Tailwind CSS, shadcn/ui components
+- **State Management**: React Context API, React Hooks
+- **Form Handling**: React Hook Form with Zod validation
+- **Internationalization**: Custom i18n implementation with context API
+- **Animations**: Framer Motion for micro-interactions
 
 ### Backend
 
-- **API**: Next.js API Routes + Flask API (for ML components)
-- **Authentication**: JWT + bcrypt
-- **Database**: MongoDB / PostgreSQL
-- **Video Call**: WebRTC + Peer.js
-- **OCR**: Tesseract.js
+- **API**: Next.js API Routes with server actions
+- **Authentication**: JWT with secure HTTP-only cookies + bcrypt for password hashing
+- **Database**: MongoDB for flexible schema and rapid development
+- **Payment Processing**: Integration with bKash, Nagad payment gateways
+- **Geolocation**: Browser Geolocation API with custom distance calculation
 
 ### AI/ML Components
 
-- **Symptom Analysis**: Python ML (Flask API) or TensorFlow.js
-- **Doctor Matching**: Collaborative filtering + rule-based matching
-- **Multilingual NLP**: BERT / IndicBERT / multilingual transformers
+- **Symptom Analysis**: Rule-based expert system with severity scoring
+- **Doctor Matching**: Recommendation engine with multi-factor scoring
+- **Smart Scheduling**: AI algorithm considering multiple scheduling factors
+- **Multilingual Support**: Custom translation system with medical terminology
 
-### Analytics
+### Data Visualization
 
-- **Dashboard**: Power BI Embed
-- **Data Visualization**: Recharts
+- **Charts**: Recharts for responsive, interactive data visualization
+- **Maps**: Leaflet.js for doctor location mapping
+- **Analytics**: Custom analytics dashboard for administrators
 
 ## Project Structure
 
+The project follows a well-organized structure that separates concerns and promotes maintainability:
+
 ```bash
-healthcare-ai-booking-system/
-├── .github/                        # GitHub workflows and templates
-│   ├── workflows/                  # CI/CD workflows
-│   │   ├── ci.yml                  # Continuous Integration workflow
-│   │   └── deploy.yml              # Deployment workflow
-│   └── ISSUE_TEMPLATE/             # Issue templates
-├── .husky/                         # Git hooks for code quality
+healthcare-platform-bd/
 ├── app/                            # Next.js App Router
 │   ├── api/                        # API routes
 │   │   ├── auth/                   # Authentication endpoints
-│   │   │   ├── login/              # Login endpoint
-│   │   │   ├── logout/             # Logout endpoint
-│   │   │   └── register/           # Registration endpoint
 │   │   ├── appointments/           # Appointment endpoints
 │   │   ├── doctors/                # Doctor endpoints
-│   │   ├── prescriptions/          # Prescription endpoints
-│   │   └── symptoms/               # Symptom analysis endpoints
+│   │   └── payments/               # Payment processing endpoints
 │   ├── (auth)/                     # Authentication pages
 │   │   ├── login/                  # Login page
 │   │   └── register/               # Registration page
-│   ├── (dashboard)/                # Dashboard pages
-│   │   ├── dashboard/              # User dashboard
-│   │   └── appointments/           # Appointments management
 │   ├── admin/                      # Admin section
 │   │   ├── dashboard/              # Admin dashboard
-│   │   ├── doctors/                # Doctor management
-│   │   └── patients/               # Patient management
-│   ├── find-doctor/                # Doctor search
+│   │   └── doctors/                # Doctor management
+│   ├── book-appointment/           # Appointment booking
+│   │   ├── [doctorId]/             # Doctor-specific booking
+│   │   ├── confirmation/           # Booking confirmation
+│   │   └── smart/                  # AI-powered scheduling
+│   ├── find-doctor/                # Doctor search and filtering
 │   ├── symptom-checker/            # Symptom analysis
 │   └── layout.tsx                  # Root layout
 ├── components/                     # React components
+│   ├── ai/                         # AI-related components
+│   │   └── smart-scheduler.tsx     # AI scheduling component
 │   ├── auth/                       # Authentication components
 │   ├── dashboard/                  # Dashboard components
 │   ├── doctors/                    # Doctor-related components
 │   ├── layout/                     # Layout components
-│   ├── patients/                   # Patient-related components
+│   │   ├── header.tsx              # Application header
+│   │   ├── footer.tsx              # Application footer
+│   │   └── sidebar.tsx             # Dashboard sidebar
+│   ├── map/                        # Map and location components
+│   ├── payment/                    # Payment components
+│   │   ├── payment-method-selector.tsx # Payment method selection
+│   │   └── payment-processor.tsx   # Payment processing
 │   ├── symptom-checker/            # Symptom checker components
-│   ├── ui/                         # UI components (shadcn)
-│   └── video-call/                 # Video consultation components
-├── config/                         # Configuration files
-│   ├── site.ts                     # Site configuration
-│   └── dashboard.ts                # Dashboard configuration
+│   │   ├── symptom-input.tsx       # Symptom input form
+│   │   └── analysis-results.tsx    # Analysis results display
+│   └── ui/                         # UI components (shadcn)
 ├── lib/                            # Utility functions
+│   ├── ai/                         # AI and ML utilities
+│   │   ├── recommendation-engine.ts # Doctor recommendation engine
+│   │   └── symptom-analyzer.ts     # Symptom analysis engine
 │   ├── api/                        # API client functions
 │   │   ├── auth.ts                 # Authentication API
 │   │   ├── appointments.ts         # Appointments API
 │   │   ├── doctors.ts              # Doctors API
-│   │   ├── prescriptions.ts        # Prescriptions API
-│   │   ├── symptoms.ts             # Symptoms API
+│   │   ├── payments.ts             # Payments API
 │   │   └── types.ts                # API types
-│   ├── db/                         # Database utilities
-│   │   ├── mongodb.ts              # MongoDB connection
-│   │   └── schema.ts               # Database schema
-│   ├── auth/                       # Authentication utilities
-│   │   ├── jwt.ts                  # JWT utilities
-│   │   └── middleware.ts           # Auth middleware
-│   ├── utils/                      # General utilities
-│   │   ├── date.ts                 # Date utilities
-│   │   └── validation.ts           # Validation utilities
-│   └── constants.ts                # Constants
-├── ml-service/                     # Python ML service
-│   ├── app/                        # Flask application
-│   │   ├── __init__.py             # Flask app initialization
-│   │   ├── routes/                 # API routes
-│   │   │   ├── __init__.py         # Routes initialization
-│   │   │   ├── analyze.py          # Symptom analysis routes
-│   │   │   └── recommend.py        # Doctor recommendation routes
-│   │   ├── models/                 # ML models
-│   │   │   ├── __init__.py         # Models initialization
-│   │   │   ├── symptom_analyzer.py # Symptom analysis model
-│   │   │   └── doctor_recommender.py # Doctor recommendation model
-│   │   ├── utils/                  # Utility functions
-│   │   │   ├── __init__.py         # Utils initialization
-│   │   │   ├── text_processor.py   # Text processing utilities
-│   │   │   └── translator.py       # Translation utilities
-│   │   └── config.py               # Configuration
-│   ├── tests/                      # Tests
-│   │   ├── __init__.py             # Tests initialization
-│   │   ├── test_analyze.py         # Symptom analysis tests
-│   │   └── test_recommend.py       # Doctor recommendation tests
-│   ├── .env.example                # Example environment variables
-│   ├── Dockerfile                  # Docker configuration
-│   ├── requirements.txt            # Python dependencies
-│   ├── requirements-dev.txt        # Development dependencies
-│   └── wsgi.py                     # WSGI entry point
+│   ├── i18n/                       # Internationalization
+│   │   ├── i18n-context.tsx        # i18n context provider
+│   │   ├── i18n-server.ts          # Server-side i18n utilities
+│   │   └── translations/           # Translation files
+│   │       ├── en.json             # English translations
+│   │       └── bn.json             # Bengali translations
+│   └── utils/                      # General utilities
+│       ├── date.ts                 # Date utilities
+│       ├── geolocation.ts          # Geolocation utilities
+│       └── validation.ts           # Validation utilities
 ├── public/                         # Static assets
 │   ├── fonts/                      # Font files
 │   ├── images/                     # Image files
-│   └── locales/                    # Localization files
-├── scripts/                        # Utility scripts
-│   ├── seed-db.js                  # Database seeding
-│   └── generate-types.js           # Type generation
+│   └── icons/                      # Icon files
 ├── styles/                         # Global styles
 │   └── globals.css                 # Global CSS
-├── tests/                          # Frontend tests
-│   ├── components/                 # Component tests
-│   ├── pages/                      # Page tests
-│   └── utils/                      # Utility tests
-├── types/                          # TypeScript type definitions
-│   ├── api.ts                      # API types
-│   ├── auth.ts                     # Authentication types
-│   └── index.ts                    # Common types
 ├── .env.example                    # Example environment variables
 ├── .eslintrc.js                    # ESLint configuration
 ├── .gitignore                      # Git ignore file
-├── .prettierrc                     # Prettier configuration
-├── docker-compose.yml              # Docker Compose configuration
-├── jest.config.js                  # Jest configuration
 ├── next.config.js                  # Next.js configuration
 ├── package.json                    # Node.js dependencies
 ├── postcss.config.js               # PostCSS configuration
@@ -168,19 +146,16 @@ healthcare-ai-booking-system/
 ### Prerequisites
 
 - Node.js 18+ and npm/yarn
-- Python 3.8+ (for ML components)
-- MongoDB or PostgreSQL
+- MongoDB (optional for full functionality)
 - Git
 
 ### Installation
 
-#### Frontend Setup
-
 1. Clone the repository
 
    ```bash
-   git clone https://github.com/rashed9810/healthcare-ai-booking-system.git
-   cd healthcare-ai-booking-system
+   git clone https://github.com/rashed9810/healthcare-platform-bd.git
+   cd healthcare-platform-bd
    ```
 
 2. Install dependencies
@@ -200,9 +175,15 @@ healthcare-ai-booking-system/
    Create a `.env.local` file in the root directory with the following variables:
 
    ```bash
+   # Authentication
    JWT_SECRET=your_jwt_secret_key
+
+   # Database (optional)
    MONGODB_URI=your_mongodb_connection_string
-   ML_API_URL=http://127.0.0.1:5000
+
+   # Payment Gateway (optional)
+   BKASH_API_KEY=your_bkash_api_key
+   NAGAD_API_KEY=your_nagad_api_key
    ```
 
 4. Run the development server
@@ -217,204 +198,186 @@ healthcare-ai-booking-system/
    yarn dev
    ```
 
-### Backend ML Service Setup
+5. Open your browser and navigate to `http://localhost:3000`
 
-1. Navigate to the ML service directory
+### Features Guide
 
-   ```bash
-   cd ml-service
-   ```
+#### Multilingual Interface
 
-2. Create a Python virtual environment
+The application supports both English and Bengali languages. You can switch between languages using the language selector in the header.
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate # On Windows: venv\Scripts\activate
-   ```
+#### AI Symptom Checker
 
-3. Install Python dependencies
+1. Navigate to the Symptom Checker page
+2. Enter your symptoms using the form or voice input
+3. View the AI analysis results with possible conditions and recommendations
+4. Book an appointment with a recommended specialist directly from the results
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+#### Smart Appointment Scheduling
 
-4. Run the Flask API
+1. Navigate to the Find a Doctor page
+2. Use the AI Scheduler option to get personalized appointment recommendations
+3. Set your preferences for date, time, urgency, and location
+4. View and select from AI-recommended doctors and time slots
 
-   ```bash
-   python wsgi.py
-   ```
+#### Mobile Payment Integration
 
-## Backend Development Guide
+1. Book an appointment with a doctor
+2. Select your preferred payment method (bKash, Nagad, etc.)
+3. Complete the payment process through the selected gateway
+4. Receive confirmation of your appointment
 
-### API Endpoints
+## API Reference
 
-The following API endpoints need to be implemented:
+The application uses the following API endpoints:
 
-#### Authentication
+### Authentication
 
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login a user
 - `POST /api/auth/logout` - Logout a user
 
-#### Doctors
+### Doctors
 
 - `GET /api/doctors` - Get all doctors (with filters)
 - `GET /api/doctors/:id` - Get a specific doctor
 - `POST /api/doctors/recommend` - Get doctor recommendations based on symptoms
 
-#### Appointments
+### Appointments
 
 - `GET /api/appointments` - Get user appointments
 - `GET /api/appointments/:id` - Get a specific appointment
 - `POST /api/appointments` - Book a new appointment
-- `POST /api/appointments/:id/cancel` - Cancel an appointment
-- `POST /api/appointments/:id/reschedule` - Reschedule an appointment
+- `PUT /api/appointments/:id/cancel` - Cancel an appointment
+- `PUT /api/appointments/:id/reschedule` - Reschedule an appointment
 
-#### Symptoms
+### Payments
 
-- `POST /api/symptoms/analyze` - Analyze symptoms and get urgency assessment
+- `POST /api/payments/initiate` - Initiate a payment transaction
+- `POST /api/payments/verify` - Verify a payment transaction
+- `GET /api/payments/methods` - Get available payment methods
 
-#### Prescriptions
+## Development Roadmap
 
-- `POST /api/prescriptions/upload` - Upload and process a prescription image
-- `GET /api/prescriptions/:appointmentId` - Get prescription for an appointment
+### Completed Features
 
-### Database Schema
+- ✅ **User Authentication System**
+- ✅ **Multilingual Interface (English & Bengali)**
+- ✅ **Doctor Listing & Filtering**
+- ✅ **Appointment Management**
+- ✅ **AI Scheduling System**
+- ✅ **Advanced Symptom Checker**
+- ✅ **Mobile Payment Integration**
 
-#### Users Collection
+### In Progress
 
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  email: String,
-  password: String, // Hashed with bcrypt
-  phone: String,
-  role: String, // "patient", "doctor", or "admin"
-  language: String, // "en" or "bn"
-  createdAt: Date
+- 🔄 **Video Consultation System**
+- 🔄 **Prescription Management**
+- 🔄 **Medical Records**
+
+### Planned Features
+
+- 📅 **Health Reminders & Notifications**
+- 📅 **Patient Community & Support Groups**
+- 📅 **Health Analytics Dashboard**
+- 📅 **Integration with Wearable Devices**
+- 📅 **Telemedicine Expansion to Rural Areas**
+
+## Data Models
+
+The application uses the following data models:
+
+### User
+
+```typescript
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string; // Hashed with bcrypt
+  phone: string;
+  role: "patient" | "doctor" | "admin";
+  language: "en" | "bn";
+  createdAt: string;
 }
 ```
 
-#### Doctors Collection
+### Doctor
 
-```javascript
-{
-  _id: ObjectId,
-  userId: ObjectId, // Reference to Users collection
-  specialty: String,
-  qualifications: [String],
-  experience: Number,
-  languages: [String],
-  availableSlots: [
-    {
-      day: String,
-      startTime: String,
-      endTime: String,
-      available: Boolean
-    }
-  ],
+```typescript
+interface Doctor {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: "doctor";
+  language: string;
+  createdAt: string;
+  specialty: string;
+  qualifications: string[];
+  experience: number;
+  languages: string[];
+  availableSlots: {
+    date: string;
+    time: string;
+    available: boolean;
+  }[];
   location: {
-    address: String,
-    city: String,
+    address: string;
+    city: string;
     coordinates: {
-      latitude: Number,
-      longitude: Number
-    }
-  },
-  rating: Number,
-  reviewCount: Number,
-  consultationFee: Number,
-  bio: String
+      latitude: number;
+      longitude: number;
+    };
+  };
+  rating: number;
+  reviewCount: number;
+  consultationFee: number;
+  bio: string;
+  availableForVideo: boolean;
 }
 ```
 
-#### Appointments Collection
+### Appointment
 
-```javascript
-{
-  _id: ObjectId,
-  patientId: String, // Reference to Users collection
-  doctorId: String, // Reference to Doctors collection
-  date: String,
-  time: String,
-  type: String, // "video" or "in-person"
-  status: String, // "scheduled", "completed", "cancelled", or "no-show"
-  symptoms: String,
-  urgencyScore: Number,
-  prescription: String,
-  followUp: Boolean,
-  createdAt: Date,
-  updatedAt: Date
+```typescript
+interface Appointment {
+  id: string;
+  patientId: string;
+  doctorId: string;
+  date: string;
+  time: string;
+  type: "video" | "in-person";
+  status: "scheduled" | "completed" | "cancelled" | "no-show";
+  symptoms: string[];
+  notes: string;
+  paymentStatus: "pending" | "completed" | "failed";
+  paymentMethod: string;
+  createdAt: string;
+  updatedAt: string;
 }
 ```
 
-#### Medical Records Collection
+### Payment
 
-```javascript
-{
-  _id: ObjectId,
-  patientId: String,
-  doctorId: String,
-  date: String,
-  diagnosis: String,
-  prescription: String,
-  notes: String,
-  createdAt: Date
+```typescript
+interface Payment {
+  id: string;
+  appointmentId: string;
+  patientId: string;
+  amount: number;
+  currency: string;
+  method: "bkash" | "nagad" | "rocket" | "card" | "cash";
+  status: "pending" | "completed" | "failed" | "refunded";
+  transactionId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 ```
-
-## ML Service Architecture
-
-The ML service is a Flask API that provides the following endpoints:
-
-### Symptom Analysis
-
-- `POST /analyze` - Analyze symptoms and return urgency assessment
-  - Input: `{ "symptoms": "text", "duration": "days", "severity": "moderate", "language": "en" }`
-  - Output: `{ "urgencyScore": 7, "possibleConditions": ["Upper Respiratory Infection"], "recommendedSpecialty": "General Physician", "recommendedTimeframe": "Within 24 hours" }`
-
-### Doctor Recommendation
-
-- `POST /recommend-doctors` - Recommend doctors based on symptoms
-  - Input: `{ "symptoms": "text", "userId": "id" }`
-  - Output: `[{ "doctorId": "id", "matchScore": 85, "reason": "Recommended based on your symptoms" }]`
-
-## WebRTC Signaling Server
-
-For the video consultation feature, you'll need to implement a signaling server to facilitate WebRTC connections. This can be done using:
-
-1. A dedicated WebSocket server
-2. Firebase Realtime Database
-3. PeerJS server
-
-The signaling server should handle:
-
-- Peer discovery
-- Session establishment
-- ICE candidate exchange
-- Connection state management
-
-## Deployment
-
-### Frontend Deployment
-
-- Deploy the Next.js application to Vercel or similar platforms
-- Set up environment variables in the deployment platform
-
-### Backend Deployment
-
-- Deploy the Flask API to a cloud provider (AWS, GCP, Azure)
-- Set up a MongoDB Atlas cluster or PostgreSQL database
-- Configure CORS to allow requests from the frontend domain
-- Set up proper authentication and security measures
-
-### WebRTC TURN/STUN Servers
-
-- Set up TURN/STUN servers for reliable WebRTC connections
-- Consider using services like Twilio's Network Traversal Service or coturn
 
 ## Contributing
+
+Contributions are welcome! Here's how you can contribute to the project:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -422,6 +385,53 @@ The signaling server should handle:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+Please make sure to update tests as appropriate and follow the code style of the project.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- [Next.js](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Vercel](https://vercel.com/)
+
+## Deployment
+
+The application can be deployed using the following methods:
+
+### Vercel Deployment (Recommended)
+
+1. Push your code to GitHub
+2. Import the repository in Vercel
+3. Configure environment variables
+4. Deploy
+
+### Manual Deployment
+
+1. Build the application:
+
+   ```bash
+   npm run build
+   ```
+
+2. Start the production server:
+
+   ```bash
+   npm start
+   ```
+
+### Environment Variables for Production
+
+Make sure to set the following environment variables in your production environment:
+
+```bash
+NODE_ENV=production
+JWT_SECRET=your_secure_jwt_secret
+MONGODB_URI=your_production_mongodb_uri
+NEXT_PUBLIC_API_URL=your_api_url
+```
