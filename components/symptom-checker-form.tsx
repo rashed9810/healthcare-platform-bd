@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { analyzeSymptoms } from "@/lib/api/symptoms";
 import { Loader2 } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface SymptomCheckerFormProps {
   initialText?: string;
@@ -20,7 +20,7 @@ export default function SymptomCheckerForm({
   initialText = "",
 }: SymptomCheckerFormProps) {
   const router = useRouter();
-  const { language } = useI18n();
+  const { language, t } = useI18n();
   const [symptoms, setSymptoms] = useState(initialText);
   const [duration, setDuration] = useState<
     "today" | "days" | "weeks" | "months"
@@ -41,11 +41,7 @@ export default function SymptomCheckerForm({
     e.preventDefault();
 
     if (!symptoms.trim()) {
-      setError(
-        language === "en"
-          ? "Please describe your symptoms"
-          : "অনুগ্রহ করে আপনার উপসর্গ বর্ণনা করুন"
-      );
+      setError(t("symptomChecker.pleaseDescribeSymptoms"));
       return;
     }
 
@@ -68,11 +64,7 @@ export default function SymptomCheckerForm({
       router.push("/symptom-checker/results");
     } catch (err) {
       console.error("Error analyzing symptoms:", err);
-      setError(
-        language === "en"
-          ? "Failed to analyze symptoms. Please try again."
-          : "উপসর্গ বিশ্লেষণ করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
-      );
+      setError(t("symptomChecker.analysisError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -82,15 +74,11 @@ export default function SymptomCheckerForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="symptoms">
-          {language === "en" ? "Symptoms Description" : "উপসর্গের বিবরণ"}
+          {t("symptomChecker.symptomsDescription")}
         </Label>
         <Textarea
           id="symptoms"
-          placeholder={
-            language === "en"
-              ? "Describe your symptoms in detail. For example: I have been experiencing headache and fever for the last two days."
-              : "আপনার উপসর্গের বিস্তারিত বর্ণনা করুন। উদাহরণস্বরূপ: আমি গত দুই দিন ধরে মাথাব্যথা এবং জ্বর অনুভব করছি।"
-          }
+          placeholder={t("symptomChecker.symptomsPlaceholder")}
           className="min-h-[150px]"
           value={symptoms}
           onChange={(e) => setSymptoms(e.target.value)}
@@ -100,11 +88,7 @@ export default function SymptomCheckerForm({
       </div>
 
       <div className="space-y-2">
-        <Label>
-          {language === "en"
-            ? "How long have you been experiencing these symptoms?"
-            : "আপনি কতদিন ধরে এই উপসর্গগুলি অনুভব করছেন?"}
-        </Label>
+        <Label>{t("symptomChecker.symptomDuration")}</Label>
         <RadioGroup
           value={duration}
           onValueChange={(value) =>
@@ -115,39 +99,25 @@ export default function SymptomCheckerForm({
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="today" id="today" />
-            <Label htmlFor="today">
-              {language === "en" ? "Started today" : "আজ শুরু হয়েছে"}
-            </Label>
+            <Label htmlFor="today">{t("symptomChecker.startedToday")}</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="days" id="days" />
-            <Label htmlFor="days">
-              {language === "en" ? "Few days" : "কয়েক দিন"}
-            </Label>
+            <Label htmlFor="days">{t("symptomChecker.fewDays")}</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="weeks" id="weeks" />
-            <Label htmlFor="weeks">
-              {language === "en" ? "Few weeks" : "কয়েক সপ্তাহ"}
-            </Label>
+            <Label htmlFor="weeks">{t("symptomChecker.fewWeeks")}</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="months" id="months" />
-            <Label htmlFor="months">
-              {language === "en"
-                ? "Few months or longer"
-                : "কয়েক মাস বা তার বেশি"}
-            </Label>
+            <Label htmlFor="months">{t("symptomChecker.monthOrLonger")}</Label>
           </div>
         </RadioGroup>
       </div>
 
       <div className="space-y-2">
-        <Label>
-          {language === "en"
-            ? "How severe are your symptoms?"
-            : "আপনার উপসর্গ কতটা তীব্র?"}
-        </Label>
+        <Label>{t("symptomChecker.symptomSeverity")}</Label>
         <RadioGroup
           value={severity}
           onValueChange={(value) =>
@@ -158,27 +128,15 @@ export default function SymptomCheckerForm({
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="mild" id="mild" />
-            <Label htmlFor="mild">
-              {language === "en"
-                ? "Mild - Noticeable but not interfering with daily activities"
-                : "হালকা - লক্ষণীয় কিন্তু দৈনন্দিন কাজে বাধা দেয় না"}
-            </Label>
+            <Label htmlFor="mild">{t("symptomChecker.mild")}</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="moderate" id="moderate" />
-            <Label htmlFor="moderate">
-              {language === "en"
-                ? "Moderate - Affecting some daily activities"
-                : "মাঝারি - কিছু দৈনন্দিন কাজে প্রভাব ফেলে"}
-            </Label>
+            <Label htmlFor="moderate">{t("symptomChecker.moderate")}</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="severe" id="severe" />
-            <Label htmlFor="severe">
-              {language === "en"
-                ? "Severe - Significantly impacting daily life"
-                : "তীব্র - দৈনন্দিন জীবনে উল্লেখযোগ্য প্রভাব ফেলে"}
-            </Label>
+            <Label htmlFor="severe">{t("symptomChecker.severe")}</Label>
           </div>
         </RadioGroup>
       </div>
@@ -187,12 +145,10 @@ export default function SymptomCheckerForm({
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {language === "en" ? "Analyzing..." : "বিশ্লেষণ করা হচ্ছে..."}
+            {t("symptomChecker.analyzing")}
           </>
-        ) : language === "en" ? (
-          "Analyze Symptoms"
         ) : (
-          "উপসর্গ বিশ্লেষণ করুন"
+          t("symptomChecker.analyzeSymptoms")
         )}
       </Button>
     </form>

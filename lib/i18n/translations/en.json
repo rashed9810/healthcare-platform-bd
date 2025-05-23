@@ -291,7 +291,12 @@
     "findSpecialist": "Find a Specialist",
     "useAiScheduler": "Use AI Scheduler",
     "noConditionsFound": "No conditions found matching your symptoms",
-    "noRecommendationsFound": "No recommendations available"
+    "noRecommendationsFound": "No recommendations available",
+    "pleaseDescribeSymptoms": "Please describe your symptoms",
+    "analysisError": "Failed to analyze symptoms. Please try again.",
+    "symptomsDescription": "Symptoms Description",
+    "symptomsPlaceholder": "Describe your symptoms in detail. For example: I have been experiencing headache and fever for the last two days.",
+    "analyzing": "Analyzing..."
   },
   "location": {
     "location": "Location",
