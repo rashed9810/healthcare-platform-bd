@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,9 +39,9 @@ import PaymentProcessor from "@/components/payment/payment-processor";
 import type { PaymentMethod } from "@/lib/api/types";
 
 interface BookAppointmentPageProps {
-  params: {
+  params: Promise<{
     doctorId: string;
-  };
+  }>;
 }
 
 export default function BookAppointmentPage({
@@ -49,7 +49,7 @@ export default function BookAppointmentPage({
 }: BookAppointmentPageProps) {
   const router = useRouter();
   const { t } = useI18n();
-  const doctorId = params.doctorId; // Direct access to params
+  const { doctorId } = use(params); // Properly unwrap params Promise
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
