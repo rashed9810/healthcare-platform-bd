@@ -40,9 +40,9 @@ import PaymentProcessor from "@/components/payment/payment-processor";
 import type { PaymentMethod } from "@/lib/api/types";
 
 interface BookAppointmentPageProps {
-  params: {
+  params: Promise<{
     doctorId: string;
-  };
+  }>;
 }
 
 export default function BookAppointmentPage({
@@ -50,7 +50,7 @@ export default function BookAppointmentPage({
 }: BookAppointmentPageProps) {
   const router = useRouter();
   const { t } = useI18n();
-  const { doctorId } = params as { doctorId: string }; // Explicitly type params
+  const { doctorId } = use(params); // Use React.use() to unwrap the Promise
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
