@@ -43,6 +43,7 @@ interface VideoConsultationProps {
   doctorId: string;
   patientId: string;
   isDoctor: boolean;
+  demoMode?: boolean; // Add demo mode for testing
 }
 
 export default function EnhancedVideoConsultation({
@@ -50,6 +51,7 @@ export default function EnhancedVideoConsultation({
   doctorId,
   patientId,
   isDoctor,
+  demoMode = false,
 }: VideoConsultationProps) {
   // Video call states
   const [peerId, setPeerId] = useState<string>("");
@@ -113,6 +115,14 @@ export default function EnhancedVideoConsultation({
 
   // Initialize PeerJS with enhanced configuration
   useEffect(() => {
+    // Skip PeerJS initialization in demo mode
+    if (demoMode) {
+      setConnected(true);
+      setParticipantCount(2);
+      addSystemMessage("Demo mode: Video consultation interface ready");
+      return;
+    }
+
     const initPeer = async () => {
       try {
         setConnecting(true);
@@ -142,7 +152,10 @@ export default function EnhancedVideoConsultation({
         });
 
         newPeer.on("error", (err) => {
-          console.error("PeerJS error:", err);
+          // Only log non-connection errors to reduce console noise
+          if (err.type !== "peer-unavailable" && err.type !== "disconnected") {
+            console.error("PeerJS error:", err);
+          }
           setConnectionError(
             `Connection error: ${err.type}. Please try again.`
           );
@@ -186,7 +199,7 @@ export default function EnhancedVideoConsultation({
     return () => {
       cleanup();
     };
-  }, [appointmentId, isDoctor]);
+  }, [appointmentId, isDoctor, demoMode]);
 
   // Get user media with enhanced constraints
   const getUserMedia = async (screenShare = false) => {

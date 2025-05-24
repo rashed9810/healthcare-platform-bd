@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { use } from "react";
 import {
   Card,
   CardContent,
@@ -18,7 +19,7 @@ import type { Appointment } from "@/lib/api/types";
 
 export default function JoinAppointmentPage() {
   const params = useParams();
-  const appointmentId = params.id as string;
+  const appointmentId = use(params).id as string;
 
   const [loading, setLoading] = useState(true);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
@@ -94,6 +95,7 @@ export default function JoinAppointmentPage() {
                   doctorId={appointment.doctorId}
                   patientId={appointment.patientId}
                   isDoctor={isDoctor}
+                  demoMode={true} // Enable demo mode for testing
                 />
               </CardContent>
             </Card>
