@@ -18,7 +18,7 @@ import {
   MonitorOff,
   Send,
   Settings,
-  Record,
+  Circle,
   StopCircle,
   Users,
   Wifi,
@@ -387,7 +387,7 @@ export default function EnhancedVideoConsultation({
             {/* Recording indicator */}
             {isRecording && (
               <Badge variant="destructive" className="animate-pulse">
-                <Record className="h-3 w-3 mr-1" />
+                <Circle className="h-3 w-3 mr-1 fill-current" />
                 Recording {formatDuration(recordingDuration)}
               </Badge>
             )}
@@ -640,7 +640,7 @@ export default function EnhancedVideoConsultation({
                 {isRecording ? (
                   <StopCircle className="h-4 w-4" />
                 ) : (
-                  <Record className="h-4 w-4" />
+                  <Circle className="h-4 w-4 fill-current" />
                 )}
               </Button>
             </div>
