@@ -1,19 +1,21 @@
 "use client";
 
-import RegisterForm from "@/components/auth/register-form";
-import { I18nProvider } from "@/lib/i18n";
-import { AuthProvider } from "@/contexts/auth-context";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function RegisterPage() {
+export default function RegisterRedirect() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to the new auth register page
+    router.replace("/auth/register");
+  }, [router]);
+
   return (
-    <I18nProvider>
-      <AuthProvider>
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col items-center justify-center min-h-[70vh]">
-            <RegisterForm />
-          </div>
-        </div>
-      </AuthProvider>
-    </I18nProvider>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <p>Redirecting to registration...</p>
+      </div>
+    </div>
   );
 }

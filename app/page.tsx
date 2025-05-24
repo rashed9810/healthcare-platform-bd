@@ -125,7 +125,7 @@ function HomeContent() {
             size="xl"
             className="healthcare-gradient text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-0"
           >
-            <Link href="/login" className="flex items-center gap-2">
+            <Link href="/auth/login" className="flex items-center gap-2">
               Get Started
               <ArrowRight className="h-5 w-5" />
             </Link>

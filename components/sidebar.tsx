@@ -219,7 +219,7 @@ export function AppSidebar() {
                   className="w-full justify-start gap-2 hover:bg-primary/5 hover:text-primary transition-colors focus:ring-2 focus:ring-primary/30 outline-offset-2"
                   asChild
                 >
-                  <Link href="/login">
+                  <Link href="/auth/login">
                     <svg
                       className="h-5 w-5"
                       viewBox="0 0 24 24"
@@ -255,7 +255,7 @@ export function AppSidebar() {
                   className="w-full justify-start gap-2 relative group overflow-hidden bg-white text-primary hover:bg-white/90 dark:bg-primary dark:text-white dark:hover:bg-primary/90 focus:ring-2 focus:ring-primary/30 outline-offset-2"
                   asChild
                 >
-                  <Link href="/register">
+                  <Link href="/auth/register">
                     <svg
                       className="h-5 w-5"
                       viewBox="0 0 24 24"

@@ -18,7 +18,7 @@ export default function SimpleLoginPage() {
 
     try {
       console.log("Attempting login with:", { email });
-      
+
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -28,7 +28,7 @@ export default function SimpleLoginPage() {
       });
 
       console.log("Login response status:", response.status);
-      
+
       const data = await response.json();
       console.log("Login response data:", data);
 
@@ -36,7 +36,7 @@ export default function SimpleLoginPage() {
         // Store token in localStorage
         localStorage.setItem("token", data.token);
         console.log("Token stored, redirecting to dashboard");
-        
+
         // Redirect to dashboard
         router.push("/dashboard");
       } else {
@@ -132,7 +132,7 @@ export default function SimpleLoginPage() {
             </div>
             <div className="text-sm">
               <Link
-                href="/register"
+                href="/auth/register"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Register

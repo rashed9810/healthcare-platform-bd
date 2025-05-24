@@ -70,12 +70,15 @@ export default function Header() {
                 </Link>
                 <div className="flex flex-col gap-2 mt-4">
                   <Button asChild variant="outline">
-                    <Link href="/login" onClick={() => setIsOpen(false)}>
+                    <Link href="/auth/login" onClick={() => setIsOpen(false)}>
                       {t("auth.login")}
                     </Link>
                   </Button>
                   <Button asChild>
-                    <Link href="/register" onClick={() => setIsOpen(false)}>
+                    <Link
+                      href="/auth/register"
+                      onClick={() => setIsOpen(false)}
+                    >
                       {t("auth.register")}
                     </Link>
                   </Button>

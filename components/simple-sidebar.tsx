@@ -116,12 +116,12 @@ export default function SimpleSidebar() {
               className="w-full justify-start gap-2"
               asChild
             >
-              <Link href="/login">
+              <Link href="/auth/login">
                 <span>Login</span>
               </Link>
             </Button>
             <Button className="w-full justify-start gap-2" asChild>
-              <Link href="/register">
+              <Link href="/auth/register">
                 <span>Register</span>
               </Link>
             </Button>

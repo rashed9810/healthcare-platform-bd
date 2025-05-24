@@ -284,7 +284,7 @@ export default function RegisterForm() {
           {language === "en"
             ? "Already have an account?"
             : "ইতিমধ্যে একটি অ্যাকাউন্ট আছে?"}{" "}
-          <Link href="/login" className="text-primary hover:underline">
+          <Link href="/auth/login" className="text-primary hover:underline">
             {language === "en" ? "Login" : "লগইন"}
           </Link>
         </div>

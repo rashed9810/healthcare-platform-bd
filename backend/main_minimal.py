@@ -66,40 +66,152 @@ async def root():
         ]
     }
 
-# Basic symptom analysis endpoint
+# Enhanced symptom analysis endpoint for Bangladesh healthcare
 @app.post("/api/v1/symptoms/analyze")
-async def analyze_symptoms_basic(symptoms_data: dict):
-    """Basic symptom analysis"""
+async def analyze_symptoms_enhanced(symptoms_data: dict):
+    """Enhanced AI-powered symptom analysis with Bangladesh healthcare context"""
     symptoms = symptoms_data.get("symptoms", [])
     patient_age = symptoms_data.get("patient_age", 30)
+    patient_gender = symptoms_data.get("patient_gender", "unknown")
+    location = symptoms_data.get("location", "Dhaka")
 
-    # Mock analysis
+    # Bangladesh-specific medical knowledge base
+    bd_conditions = {
+        "fever": {
+            "common_causes": ["Dengue", "Typhoid", "Malaria", "Viral fever", "Chikungunya"],
+            "specialists": ["General Physician", "Internal Medicine"],
+            "urgency": "moderate" if patient_age > 60 or patient_age < 5 else "low",
+            "tests": ["CBC", "Dengue NS1", "Typhoid test", "Malaria test"]
+        },
+        "diarrhea": {
+            "common_causes": ["Food poisoning", "Cholera", "Dysentery", "Gastroenteritis"],
+            "specialists": ["Gastroenterologist", "General Physician"],
+            "urgency": "high" if "severe dehydration" in symptoms else "moderate",
+            "tests": ["Stool examination", "CBC", "Electrolytes"]
+        },
+        "cough": {
+            "common_causes": ["Tuberculosis", "Pneumonia", "Bronchitis", "Asthma"],
+            "specialists": ["Pulmonologist", "General Physician"],
+            "urgency": "high" if "blood in cough" in symptoms else "low",
+            "tests": ["Chest X-ray", "Sputum test", "CBC"]
+        },
+        "chest pain": {
+            "common_causes": ["Heart disease", "Acid reflux", "Muscle strain", "Anxiety"],
+            "specialists": ["Cardiologist", "Emergency Medicine"],
+            "urgency": "urgent",
+            "tests": ["ECG", "Chest X-ray", "Cardiac enzymes"]
+        }
+    }
+
+    # Analyze symptoms with Bangladesh context
+    severity_score = len(symptoms) * 15
+    urgency_level = "low"
+    recommended_specialists = []
+    possible_conditions = []
+    suggested_tests = []
+
+    # Age-based risk adjustment
+    if patient_age > 60:
+        severity_score += 25
+    elif patient_age < 5:
+        severity_score += 30
+    elif patient_age < 18:
+        severity_score += 10
+
+    # Analyze each symptom
+    for symptom in symptoms:
+        symptom_lower = symptom.lower()
+        for condition_key, condition_info in bd_conditions.items():
+            if condition_key in symptom_lower:
+                possible_conditions.extend(condition_info["common_causes"])
+                recommended_specialists.extend(condition_info["specialists"])
+                suggested_tests.extend(condition_info["tests"])
+
+                if condition_info["urgency"] == "urgent":
+                    urgency_level = "urgent"
+                    severity_score += 40
+                elif condition_info["urgency"] == "high" and urgency_level != "urgent":
+                    urgency_level = "high"
+                    severity_score += 25
+                elif condition_info["urgency"] == "moderate" and urgency_level == "low":
+                    urgency_level = "moderate"
+                    severity_score += 15
+
+    # Remove duplicates
+    possible_conditions = list(set(possible_conditions))[:5]
+    recommended_specialists = list(set(recommended_specialists))[:3]
+    suggested_tests = list(set(suggested_tests))[:5]
+
+    # Default recommendations if no specific matches
+    if not recommended_specialists:
+        recommended_specialists = ["General Physician"]
+    if not possible_conditions:
+        possible_conditions = ["Common viral infection", "Stress-related symptoms"]
+
+    # Generate recommendations based on urgency
+    if urgency_level == "urgent":
+        recommendations = [
+            "অবিলম্বে নিকটস্থ হাসপাতালে যান / Go to nearest hospital immediately",
+            "জরুরি সেবার জন্য ৯৯৯ নম্বরে কল করুন / Call 999 for emergency services",
+            "কোনো ওষুধ খাওয়ার আগে ডাক্তারের পরামর্শ নিন / Consult doctor before taking any medication"
+        ]
+    elif urgency_level == "high":
+        recommendations = [
+            "আজকেই ডাক্তার দেখান / See a doctor today",
+            "লক্ষণগুলো খারাপ হলে হাসপাতালে যান / Go to hospital if symptoms worsen",
+            "পর্যাপ্ত বিশ্রাম নিন / Take adequate rest"
+        ]
+    else:
+        recommendations = [
+            "২৪-৪৮ ঘন্টা লক্ষণ পর্যবেক্ষণ করুন / Monitor symptoms for 24-48 hours",
+            "পর্যাপ্ত পানি পান করুন / Stay well hydrated",
+            "প্রয়োজনে ডাক্তারের পরামর্শ নিন / Consult doctor if needed"
+        ]
+
+    # Calculate confidence based on symptom clarity
+    confidence = 0.75
+    if len(symptoms) >= 3:
+        confidence += 0.1
+    if any(symptom.lower() in bd_conditions for symptom in symptoms):
+        confidence += 0.15
+    confidence = min(confidence, 0.95)
+
     analysis_result = {
-        "analysis_id": f"analysis_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
+        "analysis_id": f"bd_analysis_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
+        "patient_info": {
+            "age": patient_age,
+            "gender": patient_gender,
+            "location": location
+        },
         "symptoms": symptoms,
-        "confidence": 0.85,
-        "emergency_level": "low",
-        "recommendations": [
-            "Monitor symptoms for 24 hours",
-            "Stay hydrated and rest",
-            "Consult a doctor if symptoms worsen"
-        ],
-        "possible_conditions": [
-            {
-                "name": "Common Cold",
-                "probability": 0.7,
-                "severity": "mild"
-            },
-            {
-                "name": "Viral Infection",
-                "probability": 0.3,
-                "severity": "mild"
-            }
-        ],
+        "severity_score": min(severity_score, 100),
+        "urgency_level": urgency_level,
+        "confidence": confidence,
+        "bangladesh_context": True,
+        "analysis": {
+            "possible_conditions": [
+                {"name": condition, "probability": 0.8 - (i * 0.1), "context": "Common in Bangladesh"}
+                for i, condition in enumerate(possible_conditions)
+            ],
+            "recommended_specialists": recommended_specialists,
+            "suggested_tests": suggested_tests,
+            "recommendations": recommendations
+        },
+        "emergency_info": {
+            "national_emergency": "999",
+            "ambulance": "199",
+            "poison_control": "01777777777",
+            "nearest_hospitals": [
+                "Dhaka Medical College Hospital",
+                "Square Hospital",
+                "United Hospital"
+            ]
+        },
+        "disclaimer": "এটি একটি AI-চালিত প্রাথমিক বিশ্লেষণ। পেশাদার চিকিৎসা পরামর্শের বিকল্প নয়। / This is an AI-powered preliminary analysis and not a substitute for professional medical advice.",
         "analysis_timestamp": datetime.utcnow().isoformat()
     }
 
-    logger.info(f"Symptom analysis performed for {len(symptoms)} symptoms")
+    logger.info(f"Enhanced symptom analysis performed for {len(symptoms)} symptoms with Bangladesh context")
     return analysis_result
 
 # Basic appointment enhancement endpoint

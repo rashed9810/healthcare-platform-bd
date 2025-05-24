@@ -48,6 +48,7 @@ import {
 import DoctorList from "@/components/doctor-list";
 import { getDoctors } from "@/lib/api/doctors";
 import { Loading, LoadingGrid } from "@/components/ui/loading";
+import LocationFinder from "@/components/geolocation/location-finder";
 import type { Doctor } from "@/lib/api/types";
 
 // Specialty icons mapping
@@ -301,12 +302,18 @@ export default function FindDoctorPage() {
 
         {/* Filter Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-3 bg-white/80 backdrop-blur border-0 shadow-lg">
+          <TabsList className="grid w-full grid-cols-4 bg-white/80 backdrop-blur border-0 shadow-lg">
             <TabsTrigger
               value="all"
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               All Doctors
+            </TabsTrigger>
+            <TabsTrigger
+              value="location"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+            >
+              📍 Near Me
             </TabsTrigger>
             <TabsTrigger
               value="recommended"
@@ -321,6 +328,21 @@ export default function FindDoctorPage() {
               Available Today
             </TabsTrigger>
           </TabsList>
+
+          {/* Location Tab Content */}
+          {activeTab === "location" && (
+            <div className="mt-8">
+              <LocationFinder
+                language="en"
+                onLocationFound={(location) => {
+                  console.log("Location found:", location);
+                }}
+                onDoctorsFound={(doctors) => {
+                  console.log("Nearby doctors:", doctors);
+                }}
+              />
+            </div>
+          )}
         </Tabs>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
