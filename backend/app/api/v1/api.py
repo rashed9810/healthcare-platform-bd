@@ -14,7 +14,9 @@ from .endpoints import (
     ai_analysis,
     payments,
     medical_records,
-    notifications
+    notifications,
+    video_consultation,
+    messaging
 )
 
 api_router = APIRouter()
@@ -84,4 +86,16 @@ api_router.include_router(
     notifications.router,
     prefix="/notifications",
     tags=["Notifications"]
+)
+
+api_router.include_router(
+    video_consultation.router,
+    prefix="/video-consultation",
+    tags=["Video Consultation"]
+)
+
+api_router.include_router(
+    messaging.router,
+    prefix="/messaging",
+    tags=["Messaging"]
 )
