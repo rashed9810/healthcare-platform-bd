@@ -257,31 +257,59 @@ The application uses the following API endpoints:
 - `POST /api/payments/verify` - Verify a payment transaction
 - `GET /api/payments/methods` - Get available payment methods
 
-## Development Roadmap
+### Notifications
 
-### Completed Features
+- `POST /api/notifications/medication-reminder` - Create medication reminder
+- `POST /api/notifications/appointment-reminder` - Create appointment reminder
+- `POST /api/notifications/health-checkup-reminder` - Create health checkup reminder
+- `POST /api/notifications/send` - Send notification through multiple channels
+- `GET /api/notifications/user/:id` - Get user reminders
+- `PUT /api/notifications/reminder/:id` - Update reminder
+- `DELETE /api/notifications/reminder/:id` - Delete reminder
 
-- ✅ **User Authentication System**
-- ✅ **Multilingual Interface (English & Bengali)**
-- ✅ **Doctor Listing & Filtering**
-- ✅ **Appointment Management**
-- ✅ **AI Scheduling System**
-- ✅ **Advanced Symptom Checker**
-- ✅ **Mobile Payment Integration**
+### Messaging
 
-### In Progress
+- `GET /api/messaging/conversations/:userId` - Get user conversations
+- `GET /api/messaging/conversations/:id/messages` - Get conversation messages
+- `POST /api/messaging/conversations/:id/messages` - Send message
+- `POST /api/messaging/conversations` - Create new conversation
+- `POST /api/messaging/conversations/:id/upload` - Upload file to conversation
+- `PUT /api/messaging/conversations/:id/read` - Mark conversation as read
 
-- 🔄 **Video Consultation System**
-- 🔄 **Prescription Management**
-- 🔄 **Medical Records**
+## 🎯 **PROJECT STATUS: ~90% COMPLETE**
 
-### Planned Features
+### ✅ **COMPLETED CORE FEATURES**
 
-- 📅 **Health Reminders & Notifications**
-- 📅 **Patient Community & Support Groups**
-- 📅 **Health Analytics Dashboard**
-- 📅 **Integration with Wearable Devices**
-- 📅 **Telemedicine Expansion to Rural Areas**
+- ✅ **User Authentication System** - Complete JWT-based auth with role management
+- ✅ **Multilingual Interface (English & Bengali)** - Full i18n support with context-aware translations
+- ✅ **Doctor Listing & Filtering** - Advanced search with specialty, location, rating filters
+- ✅ **Appointment Management** - Complete booking, rescheduling, cancellation system
+- ✅ **AI Scheduling System** - Smart appointment recommendations with conflict resolution
+- ✅ **Advanced Symptom Checker** - AI-powered symptom analysis with doctor recommendations
+- ✅ **Mobile Payment Integration** - bKash, Nagad, and card payment support
+- ✅ **Geolocation Features** - GPS-based doctor search with distance calculation
+
+### ✅ **NEWLY COMPLETED ADVANCED FEATURES**
+
+- ✅ **Health Reminders & Notifications** - Medication, appointment, and health check-up reminders
+- ✅ **Health Analytics Dashboard** - Personal health metrics, trends, and predictive insights
+- ✅ **Complete Admin Dashboard** - User management, doctor verification, platform analytics
+- ✅ **Enhanced Communication System** - In-app messaging, file sharing, voice messages
+- ✅ **Advanced Payment Features** - Insurance integration, subscriptions, refund management
+
+### 🔄 **IN PROGRESS**
+
+- 🔄 **Video Consultation System** - WebRTC integration (60% complete)
+- 🔄 **Prescription Management** - Digital prescriptions (40% complete)
+- 🔄 **Medical Records** - Patient health records (30% complete)
+
+### 📅 **PLANNED FEATURES**
+
+- 📅 **Patient Community & Support Groups** - Social features for patient support
+- 📅 **Integration with Wearable Devices** - Fitness tracker and smartwatch sync
+- 📅 **Telemedicine Expansion to Rural Areas** - Offline-capable rural healthcare
+- 📅 **Emergency Services Integration** - Ambulance booking and emergency alerts
+- 📅 **AI Health Assistant** - 24/7 AI-powered health guidance
 
 ## Data Models
 
