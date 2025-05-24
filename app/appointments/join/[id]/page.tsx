@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { use } from "react";
 import {
   Card,
   CardContent,
@@ -19,7 +18,7 @@ import type { Appointment } from "@/lib/api/types";
 
 export default function JoinAppointmentPage() {
   const params = useParams();
-  const appointmentId = use(params).id as string;
+  const appointmentId = params.id as string;
 
   const [loading, setLoading] = useState(true);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
