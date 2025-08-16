@@ -310,7 +310,7 @@ Here's a rundown of key endpoints:
 - `POST /api/messaging/conversations/:id/upload` - Upload file
 - `PUT /api/messaging/conversations/:id/read` - Mark as read
 
-## **PROJECT STATUS: 100% COMPLETE** 🎉
+## **PROJECT STATUS: 100% COMPLETE** 
 
 ### ✅ **ALL CORE FEATURES COMPLETED**
 
