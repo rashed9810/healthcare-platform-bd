@@ -1,63 +1,61 @@
-# 🏥 HealthConnect Bangladesh - Complete Healthcare Platform
+# HealthConnect Bangladesh - Complete Healthcare Platform
 
-A comprehensive, AI-powered healthcare platform designed specifically for Bangladesh, featuring intelligent doctor matching, multilingual support, mobile payment integration, video consultations, digital prescriptions, and complete medical records management.
+A comprehensive, AI-powered healthcare platform crafted especially for Bangladesh. It brings together smart doctor matching, multilingual support, easy mobile payments, video consultations, digital prescriptions, and full medical records management all designed to make healthcare feel closer and simpler.
 
-![HealthConnect Screenshot](public/images/healthconnect-screenshot.png)
 
-## 🚀 **Project Overview**
+## **Project Overview**
 
-HealthConnect Bangladesh is a **fully featured, production ready healthcare platform** that revolutionizes healthcare access in Bangladesh. The platform combines cutting-edge AI technology with local healthcare needs, offering everything from symptom analysis to video consultations, digital prescriptions, and comprehensive medical records management.
-
+HealthConnect Bangladesh is a fully featured, production-ready healthcare platform that's changing how people access care in Bangladesh. By mixing advanced AI with local needs, it covers everything from symptom checks to video consults, digital prescriptions, and managing your full health history. It's built to be practical, secure, and user-friendly.
 
 | Feature                          | Status      | Description                                                    |
 | -------------------------------- | ----------- | -------------------------------------------------------------- |
-| 🔐 **Authentication & Security** | ✅ Complete | JWT-based auth with role management (Patient/Doctor/Admin)     |
-| 🌐 **Multilingual Interface**    | ✅ Complete | Full Bengali & English support with medical terminology        |
-| 👨‍⚕️ **Doctor Management**         | ✅ Complete | Advanced search, filtering, verification system                |
-| 📅 **Appointment System**        | ✅ Complete | Smart booking, rescheduling, cancellation with AI optimization |
-| 🤖 **AI Symptom Checker**        | ✅ Complete | Intelligent symptom analysis with condition prediction         |
-| 💳 **Mobile Payments**           | ✅ Complete | bKash, Nagad, card payments with subscription plans            |
-| 📍 **Geolocation Services**      | ✅ Complete | GPS-based doctor search with distance calculation              |
+| **Authentication & Security**    | ✅ Complete | JWT-based auth with roles for patients, doctors, and admins    |
+| **Multilingual Interface**       | ✅ Complete | Full support for Bengali and English, including medical terms  |
+| **Doctor Management**            | ✅ Complete | Advanced search, filters, and a verification process           |
+| **Appointment System**           | ✅ Complete | Smart booking, rescheduling, and cancellations with AI help    |
+| **AI Symptom Checker**           | ✅ Complete | Clever analysis of symptoms with predictions on conditions      |
+| **Mobile Payments**              | ✅ Complete | Integrates bKash, Nagad, cards, and subscription options       |
+| **Geolocation Services**         | ✅ Complete | GPS-powered doctor search with distance and availability info  |
 
 ### ✅ **ADVANCED PLATFORM FEATURES**
 
 | Feature                        | Status      | Description                                                 |
 | ------------------------------ | ----------- | ----------------------------------------------------------- |
-| 🎥 **Video Consultation**      | ✅ Complete | WebRTC calls, recording, real-time chat, session management |
-| 💊 **Prescription Management** | ✅ Complete | Digital prescriptions, QR verification, OCR scanning        |
-| 📁 **Medical Records**         | ✅ Complete | Comprehensive health history, file management, sharing      |
-| 📊 **Health Analytics**        | ✅ Complete | Personal metrics, trends, predictive insights               |
-| 🔔 **Smart Notifications**     | ✅ Complete | Medication, appointment, health reminders                   |
-| 💬 **Messaging System**        | ✅ Complete | Doctor-patient chat, file sharing, voice messages           |
-| 🛡️ **Admin Dashboard**         | ✅ Complete | User management, analytics, platform controls               |
-| 💰 **Advanced Payments**       | ✅ Complete | Insurance integration, refunds, payment analytics           |
+| **Video Consultation**         | ✅ Complete | WebRTC video calls with recording, chat, and session tools   |
+| **Prescription Management**    | ✅ Complete | Digital prescriptions with QR verification and OCR scanning  |
+| **Medical Records**            | ✅ Complete | Full health history tracking, file handling, and sharing     |
+| **Health Analytics**           | ✅ Complete | Personal stats, trend spotting, and forward-looking insights |
+| **Smart Notifications**        | ✅ Complete | Reminders for meds, appointments, and health check-ins       |
+| **Messaging System**           | ✅ Complete | Doctor-patient chats with file sharing and voice messages    |
+| **Admin Dashboard**            | ✅ Complete | Tools for managing users, analytics, and platform oversight  |
+| **Advanced Payments**          | ✅ Complete | Insurance tie-ins, refunds, and detailed payment tracking    |
 
-## 🌟 **Key Platform Highlights**
+## **Key Platform Highlights**
 
-### 🏥 **Complete Healthcare Ecosystem**
+### **Complete Healthcare Ecosystem**
 
-- **🎯 AI-Driven Doctor Matching**: Intelligent system matching patients with specialists based on symptoms and medical history
-- **🌐 Multilingual Interface**: Full Bengali and English support with proper medical terminology localization
-- **🤖 Advanced Symptom Analysis**: AI-powered symptom checker with condition predictions and urgency assessment
-- **📅 Smart Appointment Scheduling**: AI scheduling considering doctor availability, patient preferences, and symptom urgency
-- **💳 Mobile Payment Integration**: Seamless bKash, Nagad, and card payment integration with subscription plans
-- **📍 Geolocation Services**: GPS-based doctor search with real-time availability and distance calculation
+- **AI-Driven Doctor Matching**: A smart system that pairs patients with specialists based on symptoms and past records.
+- **Multilingual Interface**: Seamless Bengali and English, with accurate medical translations to feel natural.
+- **Advanced Symptom Analysis**: AI that checks symptoms, predicts conditions, and assesses how urgent things are.
+- **Smart Appointment Scheduling**: AI that factors in doctor availability, your preferences, and symptom severity for the best slots.
+- **Mobile Payment Integration**: Smooth connections to bKash, Nagad, and cards, plus subscription plans for ongoing care.
+- **Geolocation Services**: Find doctors via GPS, with real-time availability and how-far calculations.
 
-### 🎥 **Advanced Medical Services**
+### **Advanced Medical Services**
 
-- **💻 Video Consultations**: WebRTC-powered video calls with recording, chat, and session management
-- **💊 Digital Prescriptions**: QR-verified prescriptions with OCR scanning and pharmacy integration
-- **📁 Medical Records**: Comprehensive health history with file management and secure sharing
-- **📊 Health Analytics**: Personal health metrics, trend analysis, and predictive insights
-- **🔔 Smart Notifications**: Automated medication, appointment, and health check-up reminders
-- **💬 Real-time Messaging**: Doctor-patient communication with file sharing and voice messages
+- **Video Consultations**: Powered by WebRTC for clear calls, with options to record, chat, and manage sessions.
+- **Digital Prescriptions**: Verified with QR codes, OCR for scanning, and links to pharmacies.
+- **Medical Records**: A thorough spot for your health history, files, and secure sharing.
+- **Health Analytics**: Dive into your metrics, see trends, and get predictive advice.
+- **Smart Notifications**: Automatic alerts for medications, appointments, and routine check-ups.
+- **Real-time Messaging**: Easy communication between doctors and patients, including files and voice notes.
 
-### 🛡️ **Enterprise Features**
+### **Enterprise Features**
 
-- **👨‍💼 Admin Dashboard**: Complete platform management with user verification and analytics
-- **💰 Advanced Payments**: Insurance integration, subscription plans, and refund management
-- **🔒 Security & Compliance**: HIPAA-compliant with end-to-end encryption and secure data handling
-- **📱 Mobile-First Design**: Responsive interface optimized for all devices and screen sizes
+- **Admin Dashboard**: Full control over the platform, from verifying users to viewing analytics.
+- **Advanced Payments**: Handles insurance, subscriptions, and refunds with ease.
+- **Security & Compliance**: Meets HIPAA standards with encryption and safe data practices.
+- **Mobile-First Design**: Works great on any device, from phones to desktops.
 
 ## Tech Stack
 
@@ -67,40 +65,40 @@ HealthConnect Bangladesh is a **fully featured, production ready healthcare plat
 - **UI**: React, Tailwind CSS, shadcn/ui components
 - **State Management**: React Context API, React Hooks
 - **Form Handling**: React Hook Form with Zod validation
-- **Internationalization**: Custom i18n implementation with context API
-- **Animations**: Framer Motion for micro-interactions
+- **Internationalization**: Custom i18n setup using context API
+- **Animations**: Framer Motion for subtle, engaging effects
 
 ### Backend & API
 
 - **API Framework**: FastAPI (Python) + Next.js API Routes
-- **Authentication**: JWT with secure HTTP-only cookies + bcrypt password hashing
-- **Database**: MongoDB with comprehensive data modeling
-- **Payment Processing**: bKash, Nagad, card payment gateway integration
-- **Real-time Communication**: WebRTC for video calls, WebSocket for messaging
-- **File Storage**: Cloud storage integration for medical documents
-- **Notification Services**: Multi-channel delivery (Push, Email, SMS)
+- **Authentication**: JWT with secure HTTP-only cookies and bcrypt hashing
+- **Database**: MongoDB with thoughtful data models
+- **Payment Processing**: Integrations for bKash, Nagad, and card gateways
+- **Real-time Communication**: WebRTC for video, WebSockets for messaging
+- **File Storage**: Cloud-based for medical docs
+- **Notification Services**: Sends via push, email, or SMS
 
 ### AI/ML & Intelligence
 
-- **Symptom Analysis**: Advanced rule-based expert system with severity scoring
-- **Doctor Matching**: Multi-factor recommendation engine with ML algorithms
-- **Smart Scheduling**: AI-powered scheduling optimization with conflict resolution
-- **Health Analytics**: Predictive health insights and trend analysis
-- **OCR Processing**: Prescription data extraction from images
-- **Multilingual AI**: Context-aware translation with medical terminology
+- **Symptom Analysis**: Rule-based system with scoring for severity
+- **Doctor Matching**: Recommendation engine using multiple factors and ML
+- **Smart Scheduling**: AI that optimizes and resolves scheduling conflicts
+- **Health Analytics**: Insights on trends and predictions
+- **OCR Processing**: Extracts data from prescription images
+- **Multilingual AI**: Translations that understand medical context
 
 ### Advanced Features
 
-- **Video Consultation**: WebRTC with recording, screen sharing, and quality monitoring
-- **Digital Prescriptions**: QR code generation, verification, and pharmacy integration
-- **Medical Records**: Comprehensive health history with analytics and sharing
-- **Real-time Messaging**: Doctor-patient communication with file and voice support
-- **Health Notifications**: Smart reminders for medications, appointments, and check-ups
-- **Payment Analytics**: Revenue tracking, subscription management, and refund processing
+- **Video Consultation**: WebRTC with recording, screen sharing, and quality checks
+- **Digital Prescriptions**: QR generation, verification, and pharmacy connections
+- **Medical Records**: Full history with analytics and sharing options
+- **Real-time Messaging**: Supports files, voice, and doctor-patient talks
+- **Health Notifications**: Custom reminders for meds, visits, and more
+- **Payment Analytics**: Tracks revenue, manages subs, and handles refunds
 
 ## Project Structure
 
-The project follows a well-organized structure that separates concerns and promotes maintainability:
+The setup is organized to keep things clean and easy to maintain:
 
 ```bash
 healthcare-platform-bd/
@@ -182,19 +180,19 @@ healthcare-platform-bd/
 ### Prerequisites
 
 - Node.js 18+ and npm/yarn
-- MongoDB (optional for full functionality)
+- MongoDB (optional but great for full features)
 - Git
 
 ### Installation
 
-1. Clone the repository
+1. Clone the repo:
 
    ```bash
    git clone https://github.com/rashed9810/healthcare-platform-bd.git
    cd healthcare-platform-bd
    ```
 
-2. Install dependencies
+2. Install dependencies:
 
    ```bash
    npm install
@@ -206,23 +204,23 @@ healthcare-platform-bd/
    yarn install
    ```
 
-3. Set up environment variables
+3. Set up environment variables:
 
-   Create a `.env.local` file in the root directory with the following variables:
+   Create a `.env.local` file with:
 
    ```bash
    # Authentication
    JWT_SECRET=your_jwt_secret_key
 
-   # Database (optional)
+   # Database
    MONGODB_URI=your_mongodb_connection_string
 
-   # Payment Gateway (optional)
+   # Payment Gateway
    BKASH_API_KEY=your_bkash_api_key
    NAGAD_API_KEY=your_nagad_api_key
    ```
 
-4. Run the development server
+4. Start the dev server:
 
    ```bash
    npm run dev
@@ -234,127 +232,120 @@ healthcare-platform-bd/
    yarn dev
    ```
 
-5. Open your browser and navigate to `http://localhost:3000`
+5. Head to `http://localhost:3000` in your browser.
 
 ### Features Guide
 
 #### Multilingual Interface
 
-The application supports both English and Bengali languages. You can switch between languages using the language selector in the header.
+Switch between English and Bengali using the header selector—it's that easy.
 
 #### AI Symptom Checker
 
-1. Navigate to the Symptom Checker page
-2. Enter your symptoms using the form or voice input
-3. View the AI analysis results with possible conditions and recommendations
-4. Book an appointment with a recommended specialist directly from the results
+1. Go to the Symptom Checker page.
+2. Input symptoms via form or voice.
+3. See AI results with conditions and tips.
+4. Book directly with a suggested specialist.
 
 #### Smart Appointment Scheduling
 
-1. Navigate to the Find a Doctor page
-2. Use the AI Scheduler option to get personalized appointment recommendations
-3. Set your preferences for date, time, urgency, and location
-4. View and select from AI-recommended doctors and time slots
+1. Head to Find a Doctor.
+2. Choose AI Scheduler for custom recs.
+3. Pick your date, time, urgency, and location prefs.
+4. Select from AI-suggested options.
 
 #### Mobile Payment Integration
 
-1. Book an appointment with a doctor
-2. Select your preferred payment method (bKash, Nagad, etc.)
-3. Complete the payment process through the selected gateway
-4. Receive confirmation of your appointment
+1. Book your appointment.
+2. Pick a method like bKash or Nagad.
+3. Finish the payment.
+4. Get your confirmation.
 
 ## API Reference
 
-The application uses the following API endpoints:
+Here's a rundown of key endpoints:
 
 ### Authentication
 
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login a user
-- `POST /api/auth/logout` - Logout a user
+- `POST /api/auth/register` - Sign up a new user
+- `POST /api/auth/login` - Log in
+- `POST /api/auth/logout` - Log out
 
 ### Doctors
 
-- `GET /api/doctors` - Get all doctors (with filters)
-- `GET /api/doctors/:id` - Get a specific doctor
-- `POST /api/doctors/recommend` - Get doctor recommendations based on symptoms
+- `GET /api/doctors` - List doctors (add filters)
+- `GET /api/doctors/:id` - Get one doctor
+- `POST /api/doctors/recommend` - Symptom-based recommendations
 
 ### Appointments
 
-- `GET /api/appointments` - Get user appointments
-- `GET /api/appointments/:id` - Get a specific appointment
-- `POST /api/appointments` - Book a new appointment
-- `PUT /api/appointments/:id/cancel` - Cancel an appointment
-- `PUT /api/appointments/:id/reschedule` - Reschedule an appointment
+- `GET /api/appointments` - Your appointments
+- `GET /api/appointments/:id` - Specific one
+- `POST /api/appointments` - Book new
+- `PUT /api/appointments/:id/cancel` - Cancel
+- `PUT /api/appointments/:id/reschedule` - Reschedule
 
 ### Payments
 
-- `POST /api/payments/initiate` - Initiate a payment transaction
-- `POST /api/payments/verify` - Verify a payment transaction
-- `GET /api/payments/methods` - Get available payment methods
+- `POST /api/payments/initiate` - Start a payment
+- `POST /api/payments/verify` - Check it
+- `GET /api/payments/methods` - Available options
 
 ### Notifications
 
-- `POST /api/notifications/medication-reminder` - Create medication reminder
-- `POST /api/notifications/appointment-reminder` - Create appointment reminder
-- `POST /api/notifications/health-checkup-reminder` - Create health checkup reminder
-- `POST /api/notifications/send` - Send notification through multiple channels
-- `GET /api/notifications/user/:id` - Get user reminders
-- `PUT /api/notifications/reminder/:id` - Update reminder
-- `DELETE /api/notifications/reminder/:id` - Delete reminder
+- `POST /api/notifications/medication-reminder` - Set med reminder
+- `POST /api/notifications/appointment-reminder` - Appointment alert
+- `POST /api/notifications/health-checkup-reminder` - Check-up nudge
+- `POST /api/notifications/send` - Send via channels
+- `GET /api/notifications/user/:id` - User's reminders
+- `PUT /api/notifications/reminder/:id` - Update
+- `DELETE /api/notifications/reminder/:id` - Delete
 
 ### Messaging
 
-- `GET /api/messaging/conversations/:userId` - Get user conversations
-- `GET /api/messaging/conversations/:id/messages` - Get conversation messages
+- `GET /api/messaging/conversations/:userId` - User's chats
+- `GET /api/messaging/conversations/:id/messages` - Messages in a chat
 - `POST /api/messaging/conversations/:id/messages` - Send message
-- `POST /api/messaging/conversations` - Create new conversation
-- `POST /api/messaging/conversations/:id/upload` - Upload file to conversation
-- `PUT /api/messaging/conversations/:id/read` - Mark conversation as read
+- `POST /api/messaging/conversations` - New chat
+- `POST /api/messaging/conversations/:id/upload` - Upload file
+- `PUT /api/messaging/conversations/:id/read` - Mark as read
 
-## 🎯 **PROJECT STATUS: 100% COMPLETE** 🎉
+## **PROJECT STATUS: 100% COMPLETE** 🎉
 
 ### ✅ **ALL CORE FEATURES COMPLETED**
 
-- ✅ **User Authentication System** - Complete JWT-based auth with role management
-- ✅ **Multilingual Interface (English & Bengali)** - Full i18n support with context-aware translations
-- ✅ **Doctor Listing & Filtering** - Advanced search with specialty, location, rating filters
-- ✅ **Appointment Management** - Complete booking, rescheduling, cancellation system
-- ✅ **AI Scheduling System** - Smart appointment recommendations with conflict resolution
-- ✅ **Advanced Symptom Checker** - AI-powered symptom analysis with doctor recommendations
-- ✅ **Mobile Payment Integration** - bKash, Nagad, and card payment support
-- ✅ **Geolocation Features** - GPS-based doctor search with distance calculation
+- ✅ **User Authentication System** - Full JWT setup with roles
+- ✅ **Multilingual Interface (English & Bengali)** - Complete i18n with smart translations
+- ✅ **Doctor Listing & Filtering** - Search by specialty, location, ratings
+- ✅ **Appointment Management** - Booking, changes, cancellations all set
+- ✅ **AI Scheduling System** - Recommendations that avoid clashes
+- ✅ **Advanced Symptom Checker** - AI analysis with doc suggestions
+- ✅ **Mobile Payment Integration** - bKash, Nagad, cards ready
+- ✅ **Geolocation Features** - GPS searches with distances
 
 ### ✅ **ALL ADVANCED FEATURES COMPLETED**
 
-- ✅ **Health Reminders & Notifications** - Medication, appointment, and health check-up reminders
-- ✅ **Health Analytics Dashboard** - Personal health metrics, trends, and predictive insights
-- ✅ **Complete Admin Dashboard** - User management, doctor verification, platform analytics
-- ✅ **Enhanced Communication System** - In-app messaging, file sharing, voice messages
-- ✅ **Advanced Payment Features** - Insurance integration, subscriptions, refund management
+- ✅ **Health Reminders & Notifications** - For meds, appointments, check-ups
+- ✅ **Health Analytics Dashboard** - Metrics, trends, predictions
+- ✅ **Complete Admin Dashboard** - User mgmt, verifications, analytics
+- ✅ **Enhanced Communication System** - Messaging with files and voice
+- ✅ **Advanced Payment Features** - Insurance, subs, refunds
 
 ### ✅ **FINAL FEATURES COMPLETED**
 
-- ✅ **Video Consultation System** - Complete WebRTC integration with recording and chat
-- ✅ **Prescription Management** - Digital prescriptions with QR verification and OCR
-- ✅ **Medical Records System** - Comprehensive health records with file management
+- ✅ **Video Consultation System** - WebRTC with recording and chat
+- ✅ **Prescription Management** - Digital with QR and OCR
+- ✅ **Medical Records System** - Full records and file handling
 
-### 🚀 **READY FOR PRODUCTION**
+### **READY FOR PRODUCTION**
 
-**🎊 ALL 15 MAJOR FEATURES ARE NOW COMPLETE! 🎊**
+**ALL 15 MAJOR FEATURES ARE NOW COMPLETE!**
 
-The platform is now **production-ready** with enterprise-level features including:
-
-- Complete healthcare workflow from symptom checking to video consultations
-- Digital prescription management with pharmacy integration
-- Comprehensive medical records and health analytics
-- Advanced payment processing with insurance support
-- Multi-channel notifications and real-time messaging
-- Full administrative controls and platform management
+It's production-ready with enterprise vibes: full workflows from symptoms to consults, prescription handling, records and analytics, payments with insurance, notifications, messaging, and admin tools.
 
 ## Data Models
 
-The application uses the following data models:
+Key models in the app:
 
 ### User
 
@@ -444,48 +435,48 @@ interface Payment {
 }
 ```
 
-## 💼 **Business Impact & Market Readiness**
+## **Business Impact & Market Readiness**
 
-### 🎯 **Revenue Opportunities**
+### **Revenue Opportunities**
 
-- **💰 Consultation Fees** - Commission from video consultations and appointments
-- **📋 Subscription Plans** - Basic, Premium, and Family healthcare packages
-- **🏥 Hospital Partnerships** - Revenue sharing with healthcare institutions
-- **💊 Pharmacy Integration** - Commission from prescription fulfillment
-- **📊 Premium Analytics** - Advanced health insights for premium users
-- **🔒 Enterprise Solutions** - Corporate healthcare packages
+- **Consultation Fees** - Take a cut from appointments and video calls
+- **Subscription Plans** - Basic, premium, family options
+- **Hospital Partnerships** - Share revenue with clinics
+- **Pharmacy Integration** - Earnings from filled prescriptions
+- **Premium Analytics** - Charge for deeper health insights
+- **Enterprise Solutions** - Packages for companies
 
-### 🌍 **Market Advantages**
+### **Market Advantages**
 
-- **🇧🇩 Bangladesh-Specific** - Tailored for local healthcare needs and payment methods
-- **🌐 Multilingual Support** - Bengali and English with medical terminology
-- **📱 Mobile-First** - Optimized for smartphone usage patterns in Bangladesh
-- **💳 Local Payments** - bKash, Nagad integration for seamless transactions
-- **🏥 Complete Ecosystem** - End-to-end healthcare solution beyond basic telemedicine
+- **🇧🇩 Bangladesh-Specific** - Fits local needs and payments perfectly
+- **Multilingual Support** - Bengali and English with med terms
+- **Mobile-First** - Made for how people use phones here
+- **Local Payments** - bKash and Nagad for quick transactions
+- **Complete Ecosystem** - More than just telemed—it's end-to-end
 
-### 🚀 **Deployment Readiness**
+###  **Deployment Readiness**
 
-- **✅ Production Code** - All features tested and production-ready
-- **🔒 Security Compliant** - HIPAA standards with end-to-end encryption
-- **📊 Scalable Architecture** - Built to handle thousands of concurrent users
-- **🛡️ Admin Controls** - Complete platform management and monitoring
-- **📈 Analytics Ready** - Built-in analytics for business intelligence
+- **Production Code** - Everything tested and solid
+- **Security Compliant** - HIPAA-level with full encryption
+- **Scalable Architecture** - Handles loads of users
+- **Admin Controls** - Manage and monitor everything
+- **Analytics Ready** - Built-in for smart business decisions
 
 ## Contributing
 
-Contributions are welcome! Here's how you can contribute to the project:
+Contributions are welcome! To jump in:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+1. Fork the repo
+2. Create a branch (`git checkout -b feature/amazing-feature`)
+3. Commit (`git commit -m 'Add some amazing feature'`)
+4. Push (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-Please make sure to update tests as appropriate and follow the code style of the project.
+Update tests and stick to the code style, please.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License—details in the LICENSE file.
 
 ## Acknowledgements
 
@@ -498,32 +489,19 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Deployment
 
-The application can be deployed using the following methods:
+### Vercel (Recommended)
 
-### Vercel Deployment (Recommended)
-
-1. Push your code to GitHub
-2. Import the repository in Vercel
-3. Configure environment variables
+1. Push to GitHub
+2. Import into Vercel
+3. Set env vars
 4. Deploy
 
-### Manual Deployment
+### Manual
 
-1. Build the application:
+1. Build: `npm run build`
+2. Start: `npm start`
 
-   ```bash
-   npm run build
-   ```
-
-2. Start the production server:
-
-   ```bash
-   npm start
-   ```
-
-### Environment Variables for Production
-
-Make sure to set the following environment variables in your production environment:
+### Prod Env Vars
 
 ```bash
 NODE_ENV=production
@@ -534,7 +512,3 @@ NEXT_PUBLIC_API_URL=your_api_url
 
 ---
 
-
-**HealthConnect Bangladesh** - Revolutionizing healthcare access through technology 🏥💙✨
-
-_From concept to completion - a journey of innovation and excellence!_
